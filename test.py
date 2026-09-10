@@ -1,4 +1,8 @@
 import torch
+import torch.nn as nn
+from torch.nn import functional as F
+
+torch.manual_seed(1337)
 
 with open("input.txt", "r", encoding="utf-8") as f:
     text = f.read()
@@ -24,3 +28,38 @@ data = torch.tensor(encode(text), dtype=torch.long)
 n = int(0.9 * len(data))  # first 90% will be train, rest val(for evaluation)
 train_data = data[:n]
 val_data = data[n:]
+
+
+torch.manual_seed(1337)
+batch_size = 4  # how many independent sequences will we process in parallel?
+block_size = 8  # context length, what is the maximum context length for predictions
+
+
+def get_batch(split):
+    # generate a small batch of data of inputs x and targets y
+    data = train_data if split == "train" else val_data
+    ix = torch.randint(len(data) - block_size, (batch_size,))
+    x = torch.stack([data[i : i + block_size] for i in ix])
+    y = torch.stack([data[i + 1 : i + block_size + 1] for i in ix])
+    return x, y
+
+
+xb, yb = get_batch("train")
+
+
+class BigramLanguageModel(nn.Module):
+    def __init__(self, vocab_size):
+        super().__init__()
+        # each token directly reads off the logits for the next token from a lookup table
+        self.token_embedding_table = nn.Embedding(vocab_size, vocab_size)
+
+    def forward(self, idx, targets):
+        # idx and targets are both (B,T) tensor of integers
+        logits = self.token_embedding_table(idx)  # (B, T, C)
+
+        return logits
+
+
+m = BigramLanguageModel(vocab_size)
+out = m(xb, yb)
+print(out.shape)
