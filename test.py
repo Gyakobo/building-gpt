@@ -9,7 +9,7 @@ with open("input.txt", "r", encoding="utf-8") as f:
 
 # here are all the unique characters that occur in this text
 chars = sorted(list(set(text)))
-vocab_size = len(chars)
+vocab_size = len(chars)  # 65 in this case (26 + 26 + miscellaneous char(s))
 
 # create a mapping from characters to integers
 stoi = {ch: i for i, ch in enumerate(chars)}
@@ -57,9 +57,13 @@ class BigramLanguageModel(nn.Module):
         # idx and targets are both (B,T) tensor of integers
         logits = self.token_embedding_table(idx)  # (B, T, C)
 
-        return logits
+        B, T, C = logits.shape
+        logits = logits.view(B * T, C)  # PyTorch expects a (B, C, T) rather
+        loss = F.cross_entropy(logits, targets)
+
+        return logits, loss
 
 
 m = BigramLanguageModel(vocab_size)
-out = m(xb, yb)
-print(out.shape)
+logits, loss = m(xb, yb)
+print(logits, loss)
