@@ -2,6 +2,16 @@ import torch
 import torch.nn as nn
 from torch.nn import functional as F
 
+# hyperparameters
+batch_size = 4  # how many independent sequences will we process in parallel?
+block_size = 8  # context length, what is the maximum context length for predictions
+
+max_iters = 3000
+eval_interval = 300
+learning_rate = 1e-2
+device = "cuda" if torch.cuda.is_available() else "cpu"
+eval_iters = 200
+
 torch.manual_seed(1337)
 
 with open("input.txt", "r", encoding="utf-8") as f:
@@ -30,11 +40,7 @@ train_data = data[:n]
 val_data = data[n:]
 
 
-torch.manual_seed(1337)
-batch_size = 4  # how many independent sequences will we process in parallel?
-block_size = 8  # context length, what is the maximum context length for predictions
-
-
+# data loading
 def get_batch(split):
     # generate a small batch of data of inputs x and targets y
     data = train_data if split == "train" else val_data
@@ -47,23 +53,64 @@ def get_batch(split):
 xb, yb = get_batch("train")
 
 
+@torch.no_grad()
+def estimate_loss():
+    out = {}
+    model.eval()
+    for split in ["train", "val"]:
+        losses = torch.zeros(eval_iters)
+        for k in range(eval_iters):
+            X, Y = get_batch(split)
+            logits, loss = model(X, Y)
+            losses[k] = loss.item()
+        out[split] = losses.mean()
+    model.train()
+    return out
+
+
 class BigramLanguageModel(nn.Module):
     def __init__(self, vocab_size):
         super().__init__()
         # each token directly reads off the logits for the next token from a lookup table
         self.token_embedding_table = nn.Embedding(vocab_size, vocab_size)
 
-    def forward(self, idx, targets):
-        # idx and targets are both (B,T) tensor of integers
-        logits = self.token_embedding_table(idx)  # (B, T, C)
+    def forward(self, idx, targets=None):
+        # idx: random (B, T)s of Xb
 
-        B, T, C = logits.shape
-        logits = logits.view(B * T, C)  # PyTorch expects a (B, C, T) rather
-        loss = F.cross_entropy(logits, targets)
+        # idx and targets are both (B,T) tensor of integers
+        logits = self.token_embedding_table(idx)  # (B, T, C) =>NOT YET: h @ W2 + b2
+
+        if targets is None:
+            loss = None
+        else:
+            B, T, C = logits.shape
+            logits = logits.view(B * T, C)  # PyTorch expects a (B, C, T) rather
+            targets = targets.view(B * T)
+
+            loss = F.cross_entropy(logits, targets)
 
         return logits, loss
+
+    def generate(self, idx, max_new_tokens):
+        # idx is (B, T) array of indices in the current context
+        for _ in range(max_new_tokens):
+            # get the predictions
+            logits, loss = self(idx)
+
+            # focus only on the last time step
+            logits = logits[:, -1, :]  # becomes (B, C)
+
+            # apply softmax to get probabilities
+            probs = F.softmax(logits, dim=-1)  # (B, C)
+
+            # sample from the distribution
+            idx_next = torch.multinomial(probs, num_samples=1)  # (B, 1)
+
+            # append sampled index to the running sequence
+            idx = torch.cat((idx, idx_next), dim=1)  # (B, T+!)
+        return idx
 
 
 m = BigramLanguageModel(vocab_size)
 logits, loss = m(xb, yb)
-print(logits, loss)
+print(logits.shape, loss)
