@@ -51,6 +51,8 @@ def get_batch(split):
 
 
 xb, yb = get_batch("train")
+# xb (4, 8)
+# yb (4, 8)
 
 
 @torch.no_grad()
@@ -78,24 +80,29 @@ class BigramLanguageModel(nn.Module):
         # idx: random (B, T)s of Xb
 
         # idx and targets are both (B,T) tensor of integers
-        logits = self.token_embedding_table(idx)  # (B, T, C) =>NOT YET: h @ W2 + b2
+        logits = self.token_embedding_table(
+            idx
+        )  # (B, T) => (B, T, C) : NOT YET (h @ W2 + b2)
 
         if targets is None:
             loss = None
         else:
             B, T, C = logits.shape
-            logits = logits.view(B * T, C)  # PyTorch expects a (B, C, T) rather
-            targets = targets.view(B * T)
+            logits = logits.view(
+                B * T, C
+            )  # PyTorch cross_entropy expects a (B, C, T) rather than (B, T, C) => (B*T, C)
+            targets = targets.view(B * T)  # Must be a (B * T)
 
             loss = F.cross_entropy(logits, targets)
 
         return logits, loss
 
     def generate(self, idx, max_new_tokens):
-        # idx is (B, T) array of indices in the current context
+        # idx is a (B, T) array of indices in the current context
+
         for _ in range(max_new_tokens):
             # get the predictions
-            logits, loss = self(idx)
+            logits, loss = self(idx)  # the forward pass output
 
             # focus only on the last time step
             logits = logits[:, -1, :]  # becomes (B, C)
@@ -107,10 +114,14 @@ class BigramLanguageModel(nn.Module):
             idx_next = torch.multinomial(probs, num_samples=1)  # (B, 1)
 
             # append sampled index to the running sequence
-            idx = torch.cat((idx, idx_next), dim=1)  # (B, T+!)
+            idx = torch.cat((idx, idx_next), dim=1)  # (B, T+1)
         return idx
 
 
 m = BigramLanguageModel(vocab_size)
 logits, loss = m(xb, yb)
-print(logits.shape, loss)
+print(f"{logits.shape=}")
+print(f"{loss=}")
+
+idx = torch.zeros((1, 1), dtype=torch.long)
+print(decode(m.generate(idx=idx, max_new_tokens=100)[0].tolist()))
