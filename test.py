@@ -86,15 +86,17 @@ class BigramLanguageModel(nn.Module):
 
         # idx: random (B, T)s of Xb
         # idx and targets are both (B,T) tensor of integers
-        token_emb = self.token_embedding_table(
+        tok_emb = self.token_embedding_table(
             idx
         )  # (B, T) => (B, T, C) : NOT YET (h @ W2 + b2)
 
         pos_emb = self.position_embedding_table(
             torch.arange(T, device=device)
-        )  # (T, C) - integers from 0 to (T-1)
+        )  # (T, C) - position embedded/encoded integers from 0 to (T-1)
 
-        logits = self.lm_head(token_emb)  # (B, T, vocab_size)
+        x = tok_emb + pos_emb  # (B, T, C) + (T, C)
+
+        logits = self.lm_head(x)  # (B, T, vocab_size)
 
         if targets is None:
             loss = None
