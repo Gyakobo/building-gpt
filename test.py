@@ -3,7 +3,7 @@ import torch.nn as nn
 from torch.nn import functional as F
 
 # hyperparameters
-batch_size = 4  # how many independent sequences will we process in parallel?
+batch_size = 32  # how many independent sequences will we process in parallel?
 block_size = 8  # context length, what is the maximum context length for predictions
 
 max_iters = 3000
@@ -11,6 +11,8 @@ eval_interval = 300
 learning_rate = 1e-2
 device = "cuda" if torch.cuda.is_available() else "cpu"
 eval_iters = 200
+n_embd = 32
+# ------------------
 
 torch.manual_seed(1337)
 
@@ -47,6 +49,7 @@ def get_batch(split):
     ix = torch.randint(len(data) - block_size, (batch_size,))
     x = torch.stack([data[i : i + block_size] for i in ix])
     y = torch.stack([data[i + 1 : i + block_size + 1] for i in ix])
+    x, y = x.to(device), y.to(device)
     return x, y
 
 
@@ -71,18 +74,27 @@ def estimate_loss():
 
 
 class BigramLanguageModel(nn.Module):
-    def __init__(self, vocab_size):
+    def __init__(self):
         super().__init__()
         # each token directly reads off the logits for the next token from a lookup table
-        self.token_embedding_table = nn.Embedding(vocab_size, vocab_size)
+        self.token_embedding_table = nn.Embedding(vocab_size, n_embd)
+        self.position_embedding_table = nn.Embedding(block_size, n_embd)
+        self.lm_head = nn.Linear(n_embd, vocab_size)
 
     def forward(self, idx, targets=None):
-        # idx: random (B, T)s of Xb
+        B, T = idx.shape
 
+        # idx: random (B, T)s of Xb
         # idx and targets are both (B,T) tensor of integers
-        logits = self.token_embedding_table(
+        token_emb = self.token_embedding_table(
             idx
         )  # (B, T) => (B, T, C) : NOT YET (h @ W2 + b2)
+
+        pos_emb = self.position_embedding_table(
+            torch.arange(T, device=device)
+        )  # (T, C) - integers from 0 to (T-1)
+
+        logits = self.lm_head(token_emb)  # (B, T, vocab_size)
 
         if targets is None:
             loss = None
@@ -118,10 +130,36 @@ class BigramLanguageModel(nn.Module):
         return idx
 
 
-m = BigramLanguageModel(vocab_size)
-logits, loss = m(xb, yb)
-print(f"{logits.shape=}")
-print(f"{loss=}")
+model = BigramLanguageModel()
+m = model.to(device)
 
 idx = torch.zeros((1, 1), dtype=torch.long)
-print(decode(m.generate(idx=idx, max_new_tokens=100)[0].tolist()))
+# print(decode(m.generate(idx=idx, max_new_tokens=100)[0].tolist()))
+
+# create a PyTorch optimizer
+optimizer = torch.optim.AdamW(
+    m.parameters(), lr=1e-3
+)  # Instead of using SGD(Gradient Descent) we use AdamW cause it's more advanced
+
+for steps in range(max_iters):
+    # every once in a while evaluate the loss on train and val sets
+    if iter % eval_interval == 0:
+        losses = estimate_loss()
+        print(
+            f"step {iter}: train loss {loss['train']:.4f}, val loss {losses['val']:.4f}"
+        )
+
+    # sample a batch of data
+    xb, yb = get_batch("train")
+
+    # evaluate the loss
+    logits, loss = m(xb, yb)
+    optimizer.zero_grad(
+        set_to_none=True
+    )  # Zero out all the gradient from the previous step
+    loss.backward()
+    optimizer.step()
+
+# generate from the model
+context = torch.zeros((1, 1), dtype=torch.long, device=device)
+print(decode(m.generate(idx=idx, max_new_tokens=500)[0].tolist()))
