@@ -6,9 +6,9 @@ from torch.nn import functional as F
 batch_size = 32  # how many independent sequences will we process in parallel?
 block_size = 8  # context length, what is the maximum context length for predictions
 
-max_iters = 3000
-eval_interval = 300
-learning_rate = 1e-2
+max_iters = 5000
+eval_interval = 500
+learning_rate = 1e-3
 device = "cuda" if torch.cuda.is_available() else "cpu"
 eval_iters = 200
 n_embd = 32
@@ -82,7 +82,7 @@ class Head(nn.Module):
         super().__init__()
         self.key = nn.Linear(n_embd, head_size, bias=False)
         self.query = nn.Linear(n_embd, head_size, bias=False)
-        self.key = nn.Linear(n_embd, head_size, bias=False)
+        self.value = nn.Linear(n_embd, head_size, bias=False)
         self.register_buffer(
             "tril", torch.tril(torch.ones(block_size, block_size))
         )  # since tril is not a parameter of the module you have to assign a 'buffer'(not a parameter) with the .register_buffer method
@@ -113,6 +113,7 @@ class BigramLanguageModel(nn.Module):
         # each token directly reads off the logits for the next token from a lookup table
         self.token_embedding_table = nn.Embedding(vocab_size, n_embd)
         self.position_embedding_table = nn.Embedding(block_size, n_embd)
+        self.sa_head = Head(n_embd)  # Self attention head
         self.lm_head = nn.Linear(n_embd, vocab_size)
 
     def forward(self, idx, targets=None):
@@ -129,7 +130,7 @@ class BigramLanguageModel(nn.Module):
         )  # (T, C) - position embedded/encoded integers from 0 to (T-1)
 
         x = tok_emb + pos_emb  # (B, T, C) + (T, C)
-
+        x = self.sa_head(x)  # apply one head of self-attention. (B, T, C)
         logits = self.lm_head(x)  # (B, T, vocab_size)
 
         if targets is None:
@@ -149,8 +150,11 @@ class BigramLanguageModel(nn.Module):
         # idx is a (B, T) array of indices in the current context
 
         for _ in range(max_new_tokens):
+            # idx is (B, T) array of indices in the current context
+            idx_cond = idx[:, -block_size:]
+
             # get the predictions
-            logits, loss = self(idx)  # the forward pass output
+            logits, loss = self(idx_cond)  # the forward pass output
 
             # focus only on the last time step
             logits = logits[:, -1, :]  # becomes (B, C)
@@ -179,10 +183,10 @@ optimizer = torch.optim.AdamW(
 
 for steps in range(max_iters):
     # every once in a while evaluate the loss on train and val sets
-    if iter % eval_interval == 0:
+    if steps % eval_interval == 0:
         losses = estimate_loss()
         print(
-            f"step {iter}: train loss {loss['train']:.4f}, val loss {losses['val']:.4f}"
+            f"step {steps}: train loss {losses['train']:.4f}, val loss {losses['val']:.4f}"
         )
 
     # sample a batch of data
