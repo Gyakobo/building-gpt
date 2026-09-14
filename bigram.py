@@ -73,6 +73,40 @@ def estimate_loss():
     return out
 
 
+class Head(nn.Module):
+    """
+    One head of self-attention
+    """
+
+    def __init__(self, head_size):
+        super().__init__()
+        self.key = nn.Linear(n_embd, head_size, bias=False)
+        self.query = nn.Linear(n_embd, head_size, bias=False)
+        self.key = nn.Linear(n_embd, head_size, bias=False)
+        self.register_buffer(
+            "tril", torch.tril(torch.ones(block_size, block_size))
+        )  # since tril is not a parameter of the module you have to assign a 'buffer'(not a parameter) with the .register_buffer method
+
+    def forward(self, x):
+        B, T, C = x.shape
+        k = self.key(x)  # (B, T, C)
+        q = self.query(x)  # (B, T, C)
+
+        # compute attention scores ("affinities")
+        wei = (
+            q @ k.transpose(-2, -1) * C**-0.5
+        )  # (B, T, C) @ (B, C, T) -> (B, T, T), the -sqrt(C) is for the gaussian distribution (normalized distribution)
+        wei = wei.masked_fill(
+            self.tril[:T, :T] == 0, float("-inf")
+        )  # (B, T, T) -> makes sure that the future doesn't communicate with the past (this makes is a decoder block)
+        wei = F.softmax(wei, dim=-1)  # (B, T, T)
+
+        # perform the weighted aggregation of the values
+        v = self.value(x)
+        out = wei @ v  # (B, T, T) @ (B, T, C) -> (B, T, C)
+        return out
+
+
 class BigramLanguageModel(nn.Module):
     def __init__(self):
         super().__init__()
