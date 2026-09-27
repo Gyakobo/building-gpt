@@ -3,15 +3,19 @@ import torch.nn as nn
 from torch.nn import functional as F
 
 # hyperparameters
-batch_size = 32  # how many independent sequences will we process in parallel?
-block_size = 8  # context length, what is the maximum context length for predictions
+batch_size = 64  # how many independent sequences will we process in parallel?
+block_size = 256  # context length, what is the maximum context length for predictions
 
 max_iters = 5000
 eval_interval = 500
-learning_rate = 1e-3
+learning_rate = 3e-4
 device = "cuda" if torch.cuda.is_available() else "cpu"
 eval_iters = 200
-n_embd = 32
+n_embd = 384
+
+n_head = 6
+n_layer = 6
+dropout = 0.2
 # ------------------
 
 torch.manual_seed(1337)
@@ -86,6 +90,7 @@ class Head(nn.Module):
         self.register_buffer(
             "tril", torch.tril(torch.ones(block_size, block_size))
         )  # since tril is not a parameter of the module you have to assign a 'buffer'(not a parameter) with the .register_buffer method
+        self.dropout = nn.Dropout(dropout)
 
     def forward(self, x):
         B, T, C = x.shape
@@ -100,6 +105,7 @@ class Head(nn.Module):
             self.tril[:T, :T] == 0, float("-inf")
         )  # (B, T, T) -> makes sure that the future doesn't communicate with the past (this makes is a decoder block)
         wei = F.softmax(wei, dim=-1)  # (B, T, T)
+        wei = self.dropout(wei)
 
         # perform the weighted aggregation of the values
         v = self.value(x)
@@ -116,10 +122,11 @@ class MultiHeadAttention(nn.Module):
         super().__init__()
         self.heads = nn.ModuleList([Head(head_size) for _ in range(num_heads)])
         self.proj = nn.Linear(n_embd, n_embd)
+        self.dropout = nn.Dropout(dropout)
 
     def forward(self, x):
         out = torch.cat([h(x) for h in self.heads], dim=-1)
-        out = self.proj(out)
+        out = self.dropout(self.proj(out))
         return out
 
 
@@ -134,6 +141,7 @@ class FeedFoward(nn.Module):
             nn.Linear(n_embd, 4 * n_embd),
             nn.ReLU(),
             nn.Linear(4 * n_embd, n_embd),
+            nn.Dropout(dropout),
         )
 
     def forward(self, x):
@@ -152,10 +160,14 @@ class Block(nn.Module):
         self.sa = MultiHeadAttention(n_head, head_size)  # communication
         self.ffwd = FeedFoward(n_embd)  # computation
 
+        # Layer batch normalization
+        self.ln1 = nn.LayerNorm(n_embd)
+        self.ln2 = nn.LayerNorm(n_embd)
+
     def forward(self, x):
         # Both paradigms are calculated one after the other
-        x = x + self.sa(x)
-        x = x + self.ffwd(x)
+        x = x + self.sa(self.ln1(x))
+        x = x + self.ffwd(self.ln2(x))
         return x
 
 
@@ -166,16 +178,18 @@ class BigramLanguageModel(nn.Module):
         # each token directly reads off the logits for the next token from a lookup table
         self.token_embedding_table = nn.Embedding(vocab_size, n_embd)
         self.position_embedding_table = nn.Embedding(block_size, n_embd)
+        """
         self.blocks = nn.Sequential(
             Block(n_embd, n_head=4),
             Block(n_embd, n_head=4),
             Block(n_embd, n_head=4),
+            nn.LayerNorm(n_embd),
         )
-
-        self.sa_head = MultiHeadAttention(
-            4, n_embd // 4
-        )  # Self attention head(s), 4 heads of 8-dimensional self-attention
-        self.ffwd = FeedFoward(n_embd)
+        """
+        self.blocks = nn.Sequential(
+            *[Block(n_embd, n_head=n_head) for _ in range(n_layer)]
+        )
+        self.ln_f = nn.LayerNorm(n_embd)  # final layer norm
         self.lm_head = nn.Linear(n_embd, vocab_size)
 
     def forward(self, idx, targets=None):
@@ -192,9 +206,8 @@ class BigramLanguageModel(nn.Module):
         )  # (T, C) - position embedded/encoded integers from 0 to (T-1)
 
         x = tok_emb + pos_emb  # (B, T, C) + (T, C)
-        x = self.sa_head(x)  # apply one head of self-attention. (B, T, C)
-        x = self.ffwd(x)  # (B, T, C)
-        x = self.blocks(x)  # (B, T, C)
+        x = self.blocks(x)  # apply the transformer blocks. (B, T, C)
+        x = self.ln_f(x)  # final layer norm. (B, T, C)
         logits = self.lm_head(x)  # (B, T, vocab_size)
 
         if targets is None:
