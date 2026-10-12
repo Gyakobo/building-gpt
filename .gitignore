@@ -1,0 +1,9 @@
+# Virtual environments
+.venv/
+venv/
+ENV/
+env/
+
+# Python environment configuration files
+pyvenv.cfg
+.python-version
