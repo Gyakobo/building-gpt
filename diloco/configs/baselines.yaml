@@ -1,0 +1,8 @@
+# Plain-AdamW baselines for the k=4 experiments, same number of steps as the grid.
+base:
+  mode: baseline
+  steps: 4000
+  seed: 0
+runs:
+  - batch_size: 128   # sync baseline: 4 x 32, same total tokens as a k=4 DiLoCo run
+  - batch_size: 32    # solo baseline: one worker's batch, 4x fewer tokens

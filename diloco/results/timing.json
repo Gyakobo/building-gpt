@@ -8,7 +8,7 @@
     "nesterov": true,
     "steps": 500,
     "batch_size": 32,
-    "grad_accum": 1,
+    "micro_batch": 16,
     "lr": 0.0006,
     "min_lr_ratio": 0.1,
     "warmup": 100,
@@ -26,14 +26,14 @@
     "data_dir": "data",
     "out_dir": "results",
     "name": "timing",
-    "force": false
+    "force": true
   },
   "name": "timing",
-  "final_val_loss": 3.072313916683197,
+  "final_val_loss": 3.0723275899887086,
   "diverged": false,
   "steps_done": 500,
   "comm_rounds": 5,
   "tokens": 16384000,
-  "minutes": 7.49,
-  "peak_mem_gb": 8.0
+  "minutes": 3.3,
+  "peak_mem_gb": 4.89
 }
