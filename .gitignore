@@ -7,3 +7,5 @@ env/
 # Python environment configuration files
 pyvenv.cfg
 .python-version
+
+diloco/data/*.bin
