@@ -335,8 +335,9 @@ def parse_args():
     p = argparse.ArgumentParser()
     for f in fields(TrainConfig):
         if f.type in (bool, "bool"):
+            # works as a bare flag (--force) or with a value (--nesterov false)
             p.add_argument(f"--{f.name}", type=lambda s: s.lower() in ("1", "true", "yes"),
-                           default=f.default)
+                           nargs="?", const=True, default=f.default)
         else:
             t = {"int": int, "float": float, "str": str}.get(f.type, f.type)
             p.add_argument(f"--{f.name}", type=t, default=f.default)
