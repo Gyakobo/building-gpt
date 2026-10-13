@@ -114,13 +114,16 @@ def plot_heatmap(runs):
     cmap = matplotlib.colormaps["Blues_r"].copy()   # one hue: darker = lower (better) loss
     cmap.set_bad("#d9d8d4")
     finite = Z[np.isfinite(Z)]
-    im = ax.imshow(np.ma.masked_invalid(Z), cmap=cmap, aspect="auto",
-                   vmin=finite.min(), vmax=finite.max() + 0.25 * (finite.max() - finite.min() + 1e-9))
+    # cap the scale at the 90th percentile so one very bad cell doesn't wash out the rest;
+    # the printed numbers are always exact
+    vmin, vmax = finite.min(), np.quantile(finite, 0.9)
+    vmax = vmax + 0.15 * (vmax - vmin + 1e-9)
+    im = ax.imshow(np.ma.masked_invalid(Z), cmap=cmap, aspect="auto", vmin=vmin, vmax=vmax)
     for i in range(len(Hs)):
         for j in range(len(lrs)):
             done = (Hs[i], lrs[j]) in cells
             txt = "div." if done and np.isnan(Z[i, j]) else ("" if not done else f"{Z[i, j]:.3f}")
-            dark = done and np.isfinite(Z[i, j]) and Z[i, j] < finite.min() + 0.5 * (finite.max() - finite.min())
+            dark = done and np.isfinite(Z[i, j]) and Z[i, j] < vmin + 0.55 * (vmax - vmin)
             ax.text(j, i, txt, ha="center", va="center", fontsize=7.5, color="white" if dark else INK)
     best = np.unravel_index(np.nanargmin(Z), Z.shape)
     ax.add_patch(plt.Rectangle((best[1] - 0.5, best[0] - 0.5), 1, 1, fill=False, ec=INK, lw=1.6))
@@ -132,7 +135,7 @@ def plot_heatmap(runs):
     ax.set_xlabel("outer learning rate")
     ax.set_ylabel("inner steps between syncs $H$")
     cb = fig.colorbar(im, ax=ax, shrink=0.9)
-    cb.set_label("final validation loss")
+    cb.set_label("final validation loss (scale capped)" if finite.max() > vmax else "final validation loss")
     cb.outline.set_visible(False)
     save(fig, "heatmap")
     return {"best": (Hs[best[0]], lrs[best[1]]), "best_loss": float(Z[best])}
@@ -170,11 +173,14 @@ def plot_comm(runs, best_lr_per_H):
     save(fig, "comm")
 
 
-def plot_workers(runs, configs):
-    """Final val loss vs. k for a few (H, outer_lr) configs. Needs runs at >= 2 values of k."""
-    fig, ax = plt.subplots(figsize=(4.2, 3.0))
+WORKER_CONFIGS = [(25, 0.7), (100, 0.7), (500, 0.7)]   # must match configs/workers.yaml
+
+
+def plot_workers(runs):
+    """Final val loss vs. k for a few (H, outer_lr) configs, plus the sync baseline at each k."""
+    fig, ax = plt.subplots(figsize=(4.4, 3.0))
     drawn = 0
-    for H, lr in configs:
+    for H, lr in WORKER_CONFIGS:
         by_k = defaultdict(list)
         for r in runs:
             if (c(r, "mode") == "diloco" and c(r, "H") == H and c(r, "outer_lr") == lr
@@ -184,18 +190,49 @@ def plot_workers(runs, configs):
             continue
         ks = sorted(by_k)
         m = [stats(by_k[k])[0] for k in ks]
-        ax.plot(ks, m, color=SERIES[drawn % len(SERIES)], lw=1.8, marker="o", ms=5, label=f"$H$={H}, outer lr {lr}")
+        ax.plot(ks, m, color=SERIES[drawn % len(SERIES)], lw=1.8, marker="o", ms=5,
+                label=f"DiLoCo $H$={H}, outer lr {lr}")
         drawn += 1
     if not drawn:
         plt.close(fig)
         print("  workers: needs runs at k=2 and k=8 too, skipped")
         return
+    sync = {k: baseline(runs, 32 * k) for k in (2, 4, 8)}
+    ks = [k for k in (2, 4, 8) if sync[k]]
+    if len(ks) >= 2:
+        ax.plot(ks, [stats(sync[k])[0] for k in ks], color=MUTED, lw=1.4, ls="--", marker="s", ms=4,
+                label="sync baseline (batch $32k$)")
+    solo = baseline(runs, 32)
+    if solo:
+        ax.axhline(stats(solo)[0], color=MUTED, lw=1.2, ls=":", label="solo baseline")
     ax.set_xscale("log", base=2)
     ax.set_xticks([2, 4, 8], ["2", "4", "8"])
+    ax.minorticks_off()
     ax.set_xlabel("number of workers $k$")
     ax.set_ylabel("final validation loss")
-    ax.legend(fontsize=7)
+    ax.legend(fontsize=7, loc="upper left", bbox_to_anchor=(1.02, 1.0))
     save(fig, "workers")
+
+
+def write_ablation(runs):
+    rows = []
+    for m, nest, label in [(0.9, True, "Nesterov, momentum 0.9 (default)"),
+                           (0.9, False, "plain momentum 0.9"),
+                           (0.0, False, "no momentum")]:
+        for lr in (0.7, 1.0):
+            rs = [r for r in runs if is_diloco(r, momentum=m, nesterov=nest)
+                  and c(r, "H") == 100 and c(r, "outer_lr") == lr and c(r, "seed") == 0]
+            if rs:
+                rows.append((label, str(lr), fmt(*stats(rs)[:2])))
+    if len(rows) <= 2:
+        print("  ablation: needs configs/ablation.yaml runs, skipped")
+        return
+    with open(os.path.join(FIGS, "ablation_table.tex"), "w") as f:
+        f.write("\\begin{tabular}{lcc}\n\\toprule\nOuter optimizer & Outer lr & Val loss \\\\\n\\midrule\n")
+        for r in rows:
+            f.write(" & ".join(r) + " \\\\\n")
+        f.write("\\bottomrule\n\\end{tabular}\n")
+    print("  wrote figures/ablation_table.tex")
 
 
 # ---------------------------------------------------------------------------
@@ -248,9 +285,9 @@ def main():
             best_lr_per_H[H] = r
     plot_comm(runs, best_lr_per_H)
 
-    top = sorted(((stats(rs)[0], k) for k, rs in cells.items() if not math.isnan(stats(rs)[0])))[:2]
-    plot_workers(runs, [k for _, k in top] + ([(500, 0.7)] if (500, 0.7) not in [k for _, k in top] else []))
+    plot_workers(runs)
     rows = write_tables(runs, cells, best)
+    write_ablation(runs)
 
     print("\nsummary")
     for r in rows:
