@@ -1,0 +1,12 @@
+# Experiment 3: different data per worker. shard_mode "length" sorts stories by length and
+# gives worker i the i-th length band (worker 0 = shortest stories, worker 3 = longest).
+# Compare against the i.i.d. grid runs with the same H and outer lr (already done).
+base:
+  mode: diloco
+  k: 4
+  steps: 4000
+  shard_mode: length
+  seed: 0
+sweep:
+  H: [25, 100, 500]
+  outer_lr: [0.7, 1.0]

@@ -77,7 +77,7 @@ def stats(rs):
 def fmt(mean, std):
     if math.isnan(mean):
         return "diverged"
-    return f"{mean:.3f}" if math.isnan(std) else f"{mean:.3f} $\\pm$ {std:.3f}"
+    return f"{mean:.3f}" if math.isnan(std) else f"{mean:.3f} $\\pm$ {std:.4f}"
 
 
 def save(fig, name):
@@ -89,17 +89,17 @@ def save(fig, name):
 
 
 # ---------------------------------------------------------------------------
-def grid_cells(runs):
-    """{(H, outer_lr): [runs]} for the main k=4 grid."""
+def grid_cells(runs, seed=None):
+    """{(H, outer_lr): [runs]} for the main k=4 grid (optionally one seed only)."""
     cells = defaultdict(list)
     for r in runs:
-        if is_diloco(r):
+        if is_diloco(r) and (seed is None or c(r, "seed") == seed):
             cells[(c(r, "H"), c(r, "outer_lr"))].append(r)
     return cells
 
 
 def plot_heatmap(runs):
-    cells = grid_cells(runs)
+    cells = grid_cells(runs, seed=0)   # the grid itself is one seed; extra seeds go in Table 1
     if not cells:
         print("  heatmap: no grid runs yet, skipped")
         return None
@@ -150,8 +150,8 @@ def plot_comm(runs, best_lr_per_H):
         return
     fig, ax = plt.subplots(figsize=(4.4, 3.2))
     Hs = sorted(best_lr_per_H)
-    shades = matplotlib.colormaps["Blues"](np.linspace(0.45, 0.95, len(Hs)))  # one hue, ordered by H
-    for H, col in zip(Hs, shades):
+    for H in Hs:
+        col = H_COLOR(H)   # one hue, ordered by H
         r = best_lr_per_H[H]
         pts = [(p["comm_rounds"], p["val_loss"]) for p in r["curve"] if p["comm_rounds"] > 0]
         x, y = zip(*pts)
@@ -173,6 +173,15 @@ def plot_comm(runs, best_lr_per_H):
     save(fig, "comm")
 
 
+GRID_HS = [25, 50, 100, 250, 500]
+
+
+def H_COLOR(H):
+    """Same light-to-dark blue for a given H in every figure."""
+    i = GRID_HS.index(H) if H in GRID_HS else len(GRID_HS) - 1
+    return matplotlib.colormaps["Blues"](np.linspace(0.45, 0.95, len(GRID_HS)))[i]
+
+
 WORKER_CONFIGS = [(25, 0.7), (100, 0.7), (500, 0.7)]   # must match configs/workers.yaml
 
 
@@ -190,7 +199,7 @@ def plot_workers(runs):
             continue
         ks = sorted(by_k)
         m = [stats(by_k[k])[0] for k in ks]
-        ax.plot(ks, m, color=SERIES[drawn % len(SERIES)], lw=1.8, marker="o", ms=5,
+        ax.plot(ks, m, color=H_COLOR(H), lw=1.8, marker="o", ms=5,
                 label=f"DiLoCo $H$={H}, outer lr {lr}")
         drawn += 1
     if not drawn:
@@ -217,8 +226,8 @@ def plot_workers(runs):
 def write_ablation(runs):
     rows = []
     for m, nest, label in [(0.9, True, "Nesterov, momentum 0.9 (default)"),
-                           (0.9, False, "plain momentum 0.9"),
-                           (0.0, False, "no momentum")]:
+                           (0.9, False, "Plain momentum 0.9"),
+                           (0.0, False, "No momentum")]:
         for lr in (0.7, 1.0):
             rs = [r for r in runs if is_diloco(r, momentum=m, nesterov=nest)
                   and c(r, "H") == 100 and c(r, "outer_lr") == lr and c(r, "seed") == 0]
@@ -236,45 +245,83 @@ def write_ablation(runs):
 
 
 # ---------------------------------------------------------------------------
-def write_tables(runs, cells, best):
+def gap_closed(loss, solo, sync):
+    """Fraction of the solo-to-sync gap a run closes: 0% = solo, 100% = sync."""
+    return 100.0 * (solo - loss) / (solo - sync)
+
+
+def write_tables(runs, cells0):
     os.makedirs(FIGS, exist_ok=True)
-    rows = []
+    all_cells = grid_cells(runs)
     sync, solo = baseline(runs, 128), baseline(runs, 32)
-    if sync:
-        rows.append(("Sync baseline", "1", "--", "4", f"{sync[0]['comm_rounds']:,}", fmt(*stats(sync)[:2])))
-    if solo:
-        rows.append(("Solo baseline", "--", "--", "1", "0", fmt(*stats(solo)[:2])))
-    if (500, 0.7) in cells:
-        rs = cells[(500, 0.7)]
-        rows.append(("DiLoCo (original settings)", "500", "0.7", "4", f"{rs[0]['comm_rounds']:,}",
-                     fmt(*stats(rs)[:2])))
-    if best and best["best"] != (500, 0.7):
-        rs = cells[best["best"]]
-        rows.append(("DiLoCo (best found)", str(best["best"][0]), str(best["best"][1]), "4",
-                     f"{rs[0]['comm_rounds']:,}", fmt(*stats(rs)[:2])))
+    rows = []
+    if sync and solo:
+        sync_m, solo_m = stats(sync)[0], stats(solo)[0]
+        rows.append(("Sync baseline", "1", "--", "4", f"{c(sync[0], 'steps'):,}", fmt(*stats(sync)[:2]), "100\\%"))
+        rows.append(("Solo baseline", "--", "--", "1", "0", fmt(*stats(solo)[:2]), "0\\%"))
+        for H in (25, 100, 500):
+            rs = all_cells.get((H, 0.7))
+            if not rs:
+                continue
+            label = "DiLoCo (original settings)" if H == 500 else "DiLoCo"
+            m, sd, _ = stats(rs)
+            rows.append((label, str(H), "0.7", "4", f"{GRID_STEPS // H:,}", fmt(m, sd),
+                         f"{gap_closed(m, solo_m, sync_m):.0f}\\%"))
     with open(os.path.join(FIGS, "results_table.tex"), "w") as f:
-        f.write("\\begin{tabular}{lccccc}\n\\toprule\n"
-                "Method & $H$ & Outer lr & $k$ & Comm.\\ rounds & Val loss \\\\\n\\midrule\n")
+        f.write("\\begin{tabular}{lcccccc}\n\\toprule\n"
+                "Method & $H$ & Outer lr & $k$ & Comm.\\ rounds & Val loss & Gap closed \\\\\n\\midrule\n")
         for r in rows:
-            f.write(" & ".join(r).replace(",", "{,}") + " \\\\\n")
+            f.write(" & ".join(x.replace(",", "{,}") for x in r) + " \\\\\n")
         f.write("\\bottomrule\n\\end{tabular}\n")
     print("  wrote figures/results_table.tex")
 
     with open(os.path.join(FIGS, "grid_table.tex"), "w") as f:
         f.write("\\begin{tabular}{cccc}\n\\toprule\n$H$ & Outer lr & Comm.\\ rounds & Val loss \\\\\n\\midrule\n")
-        for (H, lr) in sorted(cells):
-            rs = cells[(H, lr)]
-            f.write(f"{H} & {lr} & {rs[0]['comm_rounds']} & {fmt(*stats(rs)[:2])} \\\\\n")
+        for (H, lr) in sorted(cells0):
+            rs = cells0[(H, lr)]
+            f.write(f"{H} & {lr} & {GRID_STEPS // H} & {fmt(*stats(rs)[:2])} \\\\\n")
         f.write("\\bottomrule\n\\end{tabular}\n")
     print("  wrote figures/grid_table.tex")
+    write_workers_table(runs)
     return rows
+
+
+def write_workers_table(runs):
+    solo = baseline(runs, 32)
+    if not solo:
+        return
+    solo_m = stats(solo)[0]
+    lines = []
+    for k in (2, 4, 8):
+        sync = baseline(runs, 32 * k)
+        if not sync:
+            continue
+        sync_m = stats(sync)[0]
+        cells = [f"{sync_m:.3f}"]
+        for H in (25, 100, 500):
+            rs = [r for r in runs if is_diloco(r, k=k) and c(r, "H") == H and c(r, "outer_lr") == 0.7]
+            if not rs:
+                cells.append("--")
+                continue
+            m = stats(rs)[0]
+            cells.append(f"{m:.3f} ({gap_closed(m, solo_m, sync_m):.0f}\\%)")
+        lines.append(f"{k} & " + " & ".join(cells) + " \\\\\n")
+    if len(lines) < 2:
+        print("  workers table: needs k=2 and k=8 runs, skipped")
+        return
+    with open(os.path.join(FIGS, "workers_table.tex"), "w") as f:
+        f.write("\\begin{tabular}{ccccc}\n\\toprule\n"
+                "$k$ & Sync baseline & DiLoCo $H{=}25$ & DiLoCo $H{=}100$ & DiLoCo $H{=}500$ \\\\\n\\midrule\n")
+        f.writelines(lines)
+        f.write("\\bottomrule\n\\end{tabular}\n")
+    print("  wrote figures/workers_table.tex")
 
 
 def main():
     runs = load_runs()
     print(f"{len(runs)} finished runs in {RESULTS}/")
     best = plot_heatmap(runs)
-    cells = grid_cells(runs)
+    cells = grid_cells(runs, seed=0)
 
     best_lr_per_H = {}
     for (H, lr), rs in cells.items():
@@ -286,13 +333,13 @@ def main():
     plot_comm(runs, best_lr_per_H)
 
     plot_workers(runs)
-    rows = write_tables(runs, cells, best)
+    rows = write_tables(runs, cells)
     write_ablation(runs)
 
     print("\nsummary")
     for r in rows:
         val = r[5].replace(" $\\pm$ ", " +- ")
-        print(f"  {r[0]:28s} H={r[1]:>4s} lr={r[2]:>4s} k={r[3]} rounds={r[4]:>7s}  val {val}")
+        print(f"  {r[0]:28s} H={r[1]:>4s} lr={r[2]:>4s} k={r[3]} rounds={r[4]:>7s}  val {val:18s} gap closed {r[6].strip(chr(92) + '%')}%")
     if best:
         print(f"  best grid cell: H={best['best'][0]}, outer_lr={best['best'][1]} -> {best['best_loss']:.4f}")
 

@@ -1,0 +1,15 @@
+# Extra seeds for the two round-2 claims that rest on small differences:
+#  (a) at a fixed 24 rounds, the best outer lr does NOT rise with H (H=500: 0.7 vs 1.0)
+#  (b) the same comparison at H=100, where runs are cheap
+base:
+  mode: diloco
+  k: 4
+runs:
+  - {H: 100, steps: 2400, warmup: 100, outer_lr: 0.5, seed: 1}
+  - {H: 100, steps: 2400, warmup: 100, outer_lr: 0.5, seed: 2}
+  - {H: 100, steps: 2400, warmup: 100, outer_lr: 0.7, seed: 1}
+  - {H: 100, steps: 2400, warmup: 100, outer_lr: 0.7, seed: 2}
+  - {H: 100, steps: 2400, warmup: 100, outer_lr: 1.0, seed: 1}
+  - {H: 100, steps: 2400, warmup: 100, outer_lr: 1.0, seed: 2}
+  - {H: 500, steps: 12000, warmup: 100, outer_lr: 0.7, seed: 1}
+  - {H: 500, steps: 12000, warmup: 100, outer_lr: 1.0, seed: 1}

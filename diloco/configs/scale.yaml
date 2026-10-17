@@ -1,0 +1,15 @@
+# Experiment 4: does the main pattern hold at GPT-2-small size (124M parameters)?
+# k = 2 workers (k = 4 would not fit 124M x 4 AdamW states in 8 GB), 4000 steps,
+# micro_batch 8 to save memory. Compare gap closed at H = 100 and 500 with the 30M model.
+base:
+  n_layer: 12
+  n_head: 12
+  n_embd: 768
+  micro_batch: 8
+  steps: 4000
+  seed: 0
+runs:
+  - {mode: baseline, batch_size: 64}                 # sync baseline for k = 2
+  - {mode: baseline, batch_size: 32}                 # solo baseline
+  - {mode: diloco, k: 2, H: 100, outer_lr: 0.7}
+  - {mode: diloco, k: 2, H: 500, outer_lr: 0.7}

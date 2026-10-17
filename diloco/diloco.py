@@ -34,6 +34,8 @@ class TrainConfig:
     mode: str = "diloco"        # "diloco" or "baseline"
     # --- DiLoCo ---
     k: int = 4                  # number of workers
+    shard_mode: str = "random"  # "random": contiguous slices of the data (i.i.d.-like);
+                                # "length": worker i gets the i-th length quantile of stories (non-i.i.d.)
     H: int = 100                # inner steps between syncs
     outer_lr: float = 0.7
     outer_momentum: float = 0.9
@@ -68,9 +70,12 @@ class TrainConfig:
             return self.name
         if self.mode == "diloco":
             n = (f"diloco_k{self.k}_H{self.H}_olr{self.outer_lr}_m{self.outer_momentum}"
-                 f"{'_nest' if self.nesterov else ''}")
+                 f"{'_nest' if self.nesterov else ''}"
+                 f"{'' if self.shard_mode == 'random' else '_' + self.shard_mode}")
         else:
             n = f"baseline_bs{self.batch_size}"
+        if (self.n_layer, self.n_head, self.n_embd) != (6, 6, 384):   # non-default model size
+            n += f"_L{self.n_layer}d{self.n_embd}"
         return f"{n}_steps{self.steps}_s{self.seed}"
 
 
@@ -96,6 +101,41 @@ def to_xy(data, ix, T, device):
     if device.startswith("cuda"):
         return x.pin_memory().to(device, non_blocking=True), y.pin_memory().to(device, non_blocking=True)
     return x.to(device), y.to(device)
+
+
+EOT = 50256   # GPT-2 end-of-text token, written between stories by data/prepare.py
+
+
+def length_shards(train, k, cache_dir=None):
+    """Non-i.i.d. split: sort stories by length and give worker i the i-th quantile.
+
+    Worker 0 gets the shortest stories, worker k-1 the longest; each worker gets about the
+    same number of tokens. Returns k arrays. Cached to disk so it is built only once.
+    """
+    paths = [os.path.join(cache_dir, f"train_len{k}_{i}.bin") for i in range(k)] if cache_dir else None
+    if paths and all(os.path.exists(p) for p in paths):
+        return [np.memmap(p, dtype=np.uint16, mode="r") for p in paths]
+
+    ends = np.flatnonzero(np.asarray(train) == EOT) + 1          # one past each story's EOT
+    if len(ends) == 0 or ends[-1] != len(train):
+        ends = np.append(ends, len(train))
+    starts = np.concatenate([[0], ends[:-1]])
+    lengths = ends - starts
+    order = np.argsort(lengths, kind="stable")                    # shortest first
+    cum = np.cumsum(lengths[order])
+    # cut points so every worker gets ~len(train)/k tokens
+    cuts = np.searchsorted(cum, np.arange(1, k) * cum[-1] / k)
+    group = np.empty(len(lengths), dtype=np.uint8)
+    for i, idx in enumerate(np.split(order, cuts)):
+        group[idx] = i
+    token_group = np.repeat(group, lengths)
+    data = np.asarray(train)
+    shards = [data[token_group == i] for i in range(k)]
+    if paths:
+        for p, sh in zip(paths, shards):
+            sh.tofile(p)
+        return [np.memmap(p, dtype=np.uint16, mode="r") for p in paths]
+    return shards
 
 
 def load_data(cfg):
@@ -198,10 +238,17 @@ def run_diloco(cfg, train, val, log):
                                 momentum=cfg.outer_momentum,
                                 nesterov=cfg.nesterov and cfg.outer_momentum > 0)
 
-    # each worker gets its own contiguous, non-overlapping slice of the training data
-    bounds = np.linspace(0, len(train), cfg.k + 1).astype(np.int64)
-    shards = [Shard(train, bounds[i], bounds[i + 1], cfg, seed=cfg.seed * 1000 + i)
-              for i in range(cfg.k)]
+    if cfg.shard_mode == "length":
+        # non-i.i.d.: each worker trains on a different range of story lengths
+        cache = cfg.data_dir if os.path.isdir(cfg.data_dir) else None
+        parts = length_shards(train, cfg.k, cache_dir=cache)
+        shards = [Shard(parts[i], 0, len(parts[i]), cfg, seed=cfg.seed * 1000 + i)
+                  for i in range(cfg.k)]
+    else:
+        # each worker gets its own contiguous, non-overlapping slice of the training data
+        bounds = np.linspace(0, len(train), cfg.k + 1).astype(np.int64)
+        shards = [Shard(train, bounds[i], bounds[i + 1], cfg, seed=cfg.seed * 1000 + i)
+                  for i in range(cfg.k)]
 
     g_params = list(global_model.parameters())
     w_params = list(worker.parameters())
