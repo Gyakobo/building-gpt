@@ -1,0 +1,17 @@
+# Experiment 6: does a synchronous warm start rescue H = 500?
+#   At the long budget (18000 steps, ~20 tokens/param), H = 500 from scratch ended no better
+#   than the solo baseline. Here the first W steps are ordinary synchronous training
+#   (batch 128, identical to the sync baseline), then DiLoCo with H = 500 takes over.
+# Experiment 7: does the cost of different data per worker grow over a long run?
+#   Length-sharded workers at the long budget, H = 25 and 100 (H = 500 already fails i.i.d.).
+base:
+  mode: diloco
+  k: 4
+  outer_lr: 0.7
+  steps: 18000
+  seed: 0
+runs:
+  - {H: 500, warm_start_steps: 2000}    # 2000 sync steps, then 32 DiLoCo rounds
+  - {H: 500, warm_start_steps: 6000}    # 6000 sync steps, then 24 DiLoCo rounds
+  - {H: 25, shard_mode: length}
+  - {H: 100, shard_mode: length}

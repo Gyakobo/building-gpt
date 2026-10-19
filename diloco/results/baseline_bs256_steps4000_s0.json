@@ -2,7 +2,9 @@
   "config": {
     "mode": "baseline",
     "k": 4,
+    "shard_mode": "random",
     "H": 100,
+    "warm_start_steps": 0,
     "outer_lr": 0.7,
     "outer_momentum": 0.9,
     "nesterov": true,
@@ -26,14 +28,14 @@
     "data_dir": "data",
     "out_dir": "results",
     "name": "",
-    "force": false
+    "force": true
   },
   "name": "baseline_bs256_steps4000_s0",
-  "final_val_loss": 1.6093732975423336,
+  "final_val_loss": 1.6111273884773254,
   "diverged": false,
   "steps_done": 4000,
   "comm_rounds": 4000,
   "tokens": 262144000,
-  "minutes": 52.58,
+  "minutes": 49.64,
   "peak_mem_gb": 3.81
 }

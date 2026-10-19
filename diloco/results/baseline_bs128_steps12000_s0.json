@@ -2,7 +2,9 @@
   "config": {
     "mode": "baseline",
     "k": 4,
+    "shard_mode": "random",
     "H": 100,
+    "warm_start_steps": 0,
     "outer_lr": 0.7,
     "outer_momentum": 0.9,
     "nesterov": true,
@@ -26,14 +28,14 @@
     "data_dir": "data",
     "out_dir": "results",
     "name": "",
-    "force": false
+    "force": true
   },
   "name": "baseline_bs128_steps12000_s0",
-  "final_val_loss": 1.5252342812716961,
+  "final_val_loss": 1.5203026086091995,
   "diverged": false,
   "steps_done": 12000,
   "comm_rounds": 12000,
   "tokens": 393216000,
-  "minutes": 79.42,
+  "minutes": 75.17,
   "peak_mem_gb": 3.81
 }

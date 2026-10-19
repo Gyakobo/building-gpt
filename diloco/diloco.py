@@ -21,7 +21,7 @@ import json
 import math
 import os
 import time
-from dataclasses import asdict, dataclass, fields
+from dataclasses import asdict, dataclass, fields, replace
 
 import numpy as np
 import torch
@@ -37,6 +37,7 @@ class TrainConfig:
     shard_mode: str = "random"  # "random": contiguous slices of the data (i.i.d.-like);
                                 # "length": worker i gets the i-th length quantile of stories (non-i.i.d.)
     H: int = 100                # inner steps between syncs
+    warm_start_steps: int = 0   # first train this many steps synchronously (batch 32*k), then switch to DiLoCo
     outer_lr: float = 0.7
     outer_momentum: float = 0.9
     nesterov: bool = True
@@ -71,7 +72,8 @@ class TrainConfig:
         if self.mode == "diloco":
             n = (f"diloco_k{self.k}_H{self.H}_olr{self.outer_lr}_m{self.outer_momentum}"
                  f"{'_nest' if self.nesterov else ''}"
-                 f"{'' if self.shard_mode == 'random' else '_' + self.shard_mode}")
+                 f"{'' if self.shard_mode == 'random' else '_' + self.shard_mode}"
+                 f"{f'_warm{self.warm_start_steps}' if self.warm_start_steps else ''}")
         else:
             n = f"baseline_bs{self.batch_size}"
         if (self.n_layer, self.n_head, self.n_embd) != (6, 6, 384):   # non-default model size
@@ -216,15 +218,33 @@ def evaluate(model, val, val_ix, cfg):
     return float(np.mean(losses))
 
 
+EVAL_BATCH = 32   # sequences per validation batch -- fixed, so every run sees the same validation set
+
+
 def fixed_val_batches(val, cfg):
-    g = torch.Generator().manual_seed(1234)   # same batches for every run
-    return [torch.randint(0, len(val) - cfg.block_size - 1, (cfg.batch_size,), generator=g)
+    # Same 20 x 32 validation sequences for EVERY run, whatever its training batch size.
+    # (An earlier version used cfg.batch_size here, which gave the large-batch sync baselines
+    # a larger validation set than everything else.)
+    g = torch.Generator().manual_seed(1234)
+    return [torch.randint(0, len(val) - cfg.block_size - 1, (EVAL_BATCH,), generator=g)
             for _ in range(cfg.eval_iters)]
 
 
 # ---------------------------------------------------------------------------
 # DiLoCo
 # ---------------------------------------------------------------------------
+def copy_opt_state(src_opt, src_model, dst_opts, dst_model):
+    """Copy AdamW state from src_opt (on src_model's params) into each optimizer in dst_opts
+    (on dst_model's params). Parameters are matched by position, which is safe because both
+    models are built by make_model and both optimizers by make_inner_opt."""
+    pairs = list(zip(src_model.parameters(), dst_model.parameters()))
+    for opt in dst_opts:
+        for ps, pd in pairs:
+            st = src_opt.state.get(ps)
+            if st:
+                opt.state[pd] = {k: v.clone() if torch.is_tensor(v) else v for k, v in st.items()}
+
+
 def run_diloco(cfg, train, val, log):
     torch.manual_seed(cfg.seed)
     global_model = make_model(cfg)
@@ -254,10 +274,28 @@ def run_diloco(cfg, train, val, log):
     w_params = list(worker.parameters())
     avg = [torch.zeros_like(p) for p in g_params]   # running mean of the workers' weights
 
-    assert cfg.steps % cfg.H == 0, "steps must be divisible by H"
-    T = cfg.steps // cfg.H
+    W = cfg.warm_start_steps
+    assert 0 <= W <= cfg.steps and (cfg.steps - W) % cfg.H == 0, "steps - warm_start_steps must be divisible by H"
+    T = (cfg.steps - W) // cfg.H
     steps_done, train_losses = 0, []
     log(global_model, 0, 0, None)
+
+    if W:
+        # Warm start: ordinary synchronous training of the global model with the combined batch of
+        # all k workers (same tokens per step as DiLoCo), following the same learning-rate schedule.
+        sync_cfg = replace(cfg, batch_size=cfg.batch_size * cfg.k)
+        sync_opt = make_inner_opt(global_model, cfg)
+        sync_shard = Shard(train, 0, len(train), sync_cfg, seed=cfg.seed * 1000)
+        for step in range(W):
+            train_losses.append(inner_step(global_model, sync_opt, sync_shard, step, sync_cfg))
+            if (step + 1) % cfg.eval_interval == 0 or step == W - 1:
+                if log(global_model, step + 1, step + 1, float(np.mean(train_losses))):
+                    return
+                train_losses = []
+        steps_done = W
+        # every worker continues from the warm-start optimizer state (Adam moments and step count)
+        copy_opt_state(sync_opt, global_model, inner_opts, worker)
+        del sync_opt
 
     for t in range(T):
         torch._foreach_zero_(avg)
@@ -278,7 +316,7 @@ def run_diloco(cfg, train, val, log):
         outer_opt.zero_grad(set_to_none=True)
 
         if steps_done % cfg.eval_interval < cfg.H or t == T - 1:
-            if log(global_model, steps_done, t + 1, float(np.mean(train_losses))):
+            if log(global_model, steps_done, W + t + 1, float(np.mean(train_losses))):
                 return
             train_losses = []
 
@@ -290,7 +328,7 @@ def run_baseline(cfg, train, val, log):
     torch.manual_seed(cfg.seed)
     model = make_model(cfg)
     opt = make_inner_opt(model, cfg)
-    shard = Shard(train, 0, len(train), cfg, seed=cfg.seed * 1000)   # same stream as DiLoCo worker 0
+    shard = Shard(train, 0, len(train), cfg, seed=cfg.seed * 1000)   # samples from the whole training set
     train_losses = []
     log(model, 0, 0, None)
     for step in range(cfg.steps):

@@ -95,4 +95,27 @@ def test_length_mode_trains(data):
     train = train.copy(); train[::50] = EOT                              # fake story boundaries
     rows = train_once(tiny(mode="diloco", k=2, H=5, shard_mode="length", eval_interval=5,
                            data_dir="/nonexistent"), (train, val))
-    assert np.isfinite(val_losses(rows)).all()   
+    assert np.isfinite(val_losses(rows)).all()
+
+
+def test_all_warm_start_equals_adamw(data):
+    # k=1 and warm_start_steps == steps: the whole run is ordinary AdamW, so it must match the baseline
+    base = train_once(tiny(mode="baseline"), data)
+    warm = train_once(tiny(mode="diloco", k=1, H=5, warm_start_steps=20), data)
+    np.testing.assert_allclose(val_losses(warm), val_losses(base), rtol=0, atol=1e-6)
+
+
+def test_warm_start_then_diloco(data):
+    # warm start for 10 steps, then 2 DiLoCo rounds of H=5: rounds are counted on top of the warm steps
+    rows = train_once(tiny(mode="diloco", k=2, H=5, warm_start_steps=10, eval_interval=5), data)
+    assert [r["step"] for r in rows] == [0, 5, 10, 15, 20]
+    assert [r["comm_rounds"] for r in rows] == [0, 5, 10, 11, 12]
+    assert np.isfinite(val_losses(rows)).all()
+
+
+def test_validation_set_independent_of_batch_size(data):
+    # every run must be scored on the same validation sequences, whatever its training batch size:
+    # with the same initialization, the step-0 validation loss must match exactly
+    a = train_once(tiny(mode="baseline", batch_size=4, steps=2, eval_iters=3), data)
+    b = train_once(tiny(mode="baseline", batch_size=16, steps=2, eval_iters=3), data)
+    assert a[0]["val_loss"] == b[0]["val_loss"]
