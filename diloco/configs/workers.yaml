@@ -1,0 +1,10 @@
+# Worker scaling: k = 2 and 8 (k = 4 is already in the grid). Outer lr 0.7, Nesterov 0.9.
+# Matching sync baselines (batch 64 and 256) are in configs/baselines.yaml.
+base:
+  mode: diloco
+  steps: 4000
+  outer_lr: 0.7
+  seed: 0
+sweep:
+  k: [2, 8]
+  H: [25, 100, 500]

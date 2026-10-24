@@ -1,0 +1,14 @@
+# Extra seeds for the headline table (seed 0 already exists from the grid / baselines).
+base:
+  steps: 4000
+runs:
+  - {mode: baseline, batch_size: 128, seed: 1}
+  - {mode: baseline, batch_size: 128, seed: 2}
+  - {mode: baseline, batch_size: 32, seed: 1}
+  - {mode: baseline, batch_size: 32, seed: 2}
+  - {mode: diloco, k: 4, H: 25, outer_lr: 0.7, seed: 1}
+  - {mode: diloco, k: 4, H: 25, outer_lr: 0.7, seed: 2}
+  - {mode: diloco, k: 4, H: 100, outer_lr: 0.7, seed: 1}
+  - {mode: diloco, k: 4, H: 100, outer_lr: 0.7, seed: 2}
+  - {mode: diloco, k: 4, H: 500, outer_lr: 0.7, seed: 1}
+  - {mode: diloco, k: 4, H: 500, outer_lr: 0.7, seed: 2}

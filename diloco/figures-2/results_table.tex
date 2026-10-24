@@ -1,0 +1,11 @@
+\begin{tabular}{lcccccc}
+\toprule
+Method & $H$ & Outer lr & $k$ & Comm.\ rounds & Val loss & Gap closed \\
+\midrule
+Sync baseline & 1 & -- & 4 & 4{,}000 & 1.697 $\pm$ 0.0004 & 100\% \\
+Solo baseline & -- & -- & 1 & 0 & 1.983 $\pm$ 0.0009 & 0\% \\
+DiLoCo & 25 & 0.7 & 4 & 160 & 1.789 $\pm$ 0.0045 & 68\% \\
+DiLoCo & 100 & 0.7 & 4 & 40 & 1.887 $\pm$ 0.0042 & 33\% \\
+DiLoCo (original settings) & 500 & 0.7 & 4 & 8 & 1.936 $\pm$ 0.0018 & 16\% \\
+\bottomrule
+\end{tabular}

@@ -1,0 +1,11 @@
+# Plain-AdamW baselines, same number of steps as the grid.
+# Sync baseline for k workers = batch 32*k (same total tokens as a k-worker DiLoCo run).
+base:
+  mode: baseline
+  steps: 4000
+  seed: 0
+runs:
+  - batch_size: 128   # sync baseline for k=4
+  - batch_size: 32    # solo baseline: one worker's batch, no communication
+  - batch_size: 64    # sync baseline for k=2
+  - batch_size: 256   # sync baseline for k=8

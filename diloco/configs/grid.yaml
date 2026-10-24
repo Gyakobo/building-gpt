@@ -1,0 +1,12 @@
+# Main experiment: sync interval H x outer learning rate, 4 workers.
+# 25 runs. H=500 + outer_lr=0.7 is the original DiLoCo setting.
+base:
+  mode: diloco
+  k: 4
+  steps: 4000
+  outer_momentum: 0.9
+  nesterov: true
+  seed: 0
+sweep:
+  H: [25, 50, 100, 250, 500]
+  outer_lr: [0.1, 0.3, 0.5, 0.7, 1.0]

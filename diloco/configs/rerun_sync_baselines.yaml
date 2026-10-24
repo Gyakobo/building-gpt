@@ -1,0 +1,20 @@
+# Re-run every sync baseline whose batch size is not 32. Before the validation-set fix, these
+# were scored on a larger validation set than all other runs. force: true overwrites the old
+# results. If this sweep is interrupted, delete the lines that already finished before re-running,
+# or they will run again.
+base:
+  mode: baseline
+  seed: 0
+  force: true
+runs:
+  - {batch_size: 128, steps: 4000}
+  - {batch_size: 128, steps: 4000, seed: 1}
+  - {batch_size: 128, steps: 4000, seed: 2}
+  - {batch_size: 64, steps: 4000}
+  - {batch_size: 256, steps: 4000}
+  - {batch_size: 128, steps: 600, warmup: 60}
+  - {batch_size: 128, steps: 2400}
+  - {batch_size: 128, steps: 6000}
+  - {batch_size: 128, steps: 12000}
+  - {batch_size: 128, steps: 18000}
+  - {batch_size: 64, steps: 4000, n_layer: 12, n_head: 12, n_embd: 768, micro_batch: 8}

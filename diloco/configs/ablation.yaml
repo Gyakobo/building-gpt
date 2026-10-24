@@ -1,0 +1,12 @@
+# Outer optimizer ablation at H=100, k=4. The default (Nesterov, momentum 0.9) is already in the grid.
+base:
+  mode: diloco
+  k: 4
+  H: 100
+  steps: 4000
+  seed: 0
+runs:
+  - {outer_momentum: 0.9, nesterov: false, outer_lr: 0.7}   # plain momentum
+  - {outer_momentum: 0.9, nesterov: false, outer_lr: 1.0}
+  - {outer_momentum: 0.0, nesterov: false, outer_lr: 0.7}   # no momentum
+  - {outer_momentum: 0.0, nesterov: false, outer_lr: 1.0}

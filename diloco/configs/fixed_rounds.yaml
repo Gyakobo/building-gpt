@@ -1,0 +1,32 @@
+# Experiment 1: decouple H from the number of sync rounds.
+# Every DiLoCo run gets exactly T = 24 outer rounds, so steps = 24 * H.
+# Tests whether 'best outer lr rises with H' (Charles et al., 2025) survives once
+# H and the number of outer steps are no longer tied together.
+# Baselines are matched to each step budget (sync = batch 128, solo = batch 32).
+base:
+  seed: 0
+runs:
+  # H = 25: 600 inner steps per worker
+  - {mode: diloco, k: 4, H: 25, outer_lr: 0.5, steps: 600, warmup: 60}
+  - {mode: diloco, k: 4, H: 25, outer_lr: 0.7, steps: 600, warmup: 60}
+  - {mode: diloco, k: 4, H: 25, outer_lr: 1.0, steps: 600, warmup: 60}
+  - {mode: baseline, batch_size: 128, steps: 600, warmup: 60}
+  - {mode: baseline, batch_size: 32, steps: 600, warmup: 60}
+  # H = 100: 2400 inner steps per worker
+  - {mode: diloco, k: 4, H: 100, outer_lr: 0.5, steps: 2400, warmup: 100}
+  - {mode: diloco, k: 4, H: 100, outer_lr: 0.7, steps: 2400, warmup: 100}
+  - {mode: diloco, k: 4, H: 100, outer_lr: 1.0, steps: 2400, warmup: 100}
+  - {mode: baseline, batch_size: 128, steps: 2400, warmup: 100}
+  - {mode: baseline, batch_size: 32, steps: 2400, warmup: 100}
+  # H = 250: 6000 inner steps per worker
+  - {mode: diloco, k: 4, H: 250, outer_lr: 0.5, steps: 6000, warmup: 100}
+  - {mode: diloco, k: 4, H: 250, outer_lr: 0.7, steps: 6000, warmup: 100}
+  - {mode: diloco, k: 4, H: 250, outer_lr: 1.0, steps: 6000, warmup: 100}
+  - {mode: baseline, batch_size: 128, steps: 6000, warmup: 100}
+  - {mode: baseline, batch_size: 32, steps: 6000, warmup: 100}
+  # H = 500: 12000 inner steps per worker
+  - {mode: diloco, k: 4, H: 500, outer_lr: 0.5, steps: 12000, warmup: 100}
+  - {mode: diloco, k: 4, H: 500, outer_lr: 0.7, steps: 12000, warmup: 100}
+  - {mode: diloco, k: 4, H: 500, outer_lr: 1.0, steps: 12000, warmup: 100}
+  - {mode: baseline, batch_size: 128, steps: 12000, warmup: 100}
+  - {mode: baseline, batch_size: 32, steps: 12000, warmup: 100}

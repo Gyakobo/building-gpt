@@ -1,0 +1,14 @@
+# Experiment 5: does DiLoCo's benefit survive a compute-optimal budget?
+# Charles et al. train on ~20 tokens per parameter. 30M params x 20 = 600M tokens, i.e.
+# 18000 steps per worker at k = 4 (590M tokens). Our main grid used 4000 steps (~4 tokens/param).
+# Tracks whether the "gap closed" erodes over long training at each H.
+# Note: 590M tokens > 474M in TinyStories, so the sync baseline sees ~1.25 epochs.
+base:
+  steps: 18000
+  seed: 0
+runs:
+  - {mode: diloco, k: 4, H: 25, outer_lr: 0.7}
+  - {mode: diloco, k: 4, H: 100, outer_lr: 0.7}
+  - {mode: diloco, k: 4, H: 500, outer_lr: 0.7}
+  - {mode: baseline, batch_size: 128}
+  - {mode: baseline, batch_size: 32}

@@ -1,0 +1,918 @@
+24 runs, about 10.4 GPU-hours if none are already done
+
+    1. ~  26 min  {'steps': 4000, 'mode': 'baseline', 'batch_size': 128, 'seed': 1}
+    2. ~  26 min  {'steps': 4000, 'mode': 'baseline', 'batch_size': 128, 'seed': 2}
+    3. ~   7 min  {'steps': 4000, 'mode': 'baseline', 'batch_size': 32, 'seed': 1}
+    4. ~   7 min  {'steps': 4000, 'mode': 'baseline', 'batch_size': 32, 'seed': 2}
+    5. ~  26 min  {'steps': 4000, 'mode': 'diloco', 'k': 4, 'H': 25, 'outer_lr': 0.7, 'seed': 1}
+    6. ~  26 min  {'steps': 4000, 'mode': 'diloco', 'k': 4, 'H': 25, 'outer_lr': 0.7, 'seed': 2}
+    7. ~  26 min  {'steps': 4000, 'mode': 'diloco', 'k': 4, 'H': 100, 'outer_lr': 0.7, 'seed': 1}
+    8. ~  26 min  {'steps': 4000, 'mode': 'diloco', 'k': 4, 'H': 100, 'outer_lr': 0.7, 'seed': 2}
+    9. ~  26 min  {'steps': 4000, 'mode': 'diloco', 'k': 4, 'H': 500, 'outer_lr': 0.7, 'seed': 1}
+   10. ~  26 min  {'steps': 4000, 'mode': 'diloco', 'k': 4, 'H': 500, 'outer_lr': 0.7, 'seed': 2}
+   11. ~  26 min  {'mode': 'diloco', 'k': 4, 'H': 100, 'steps': 4000, 'seed': 0, 'outer_momentum': 0.9, 'nesterov': False, 'outer_lr': 0.7}
+   12. ~  26 min  {'mode': 'diloco', 'k': 4, 'H': 100, 'steps': 4000, 'seed': 0, 'outer_momentum': 0.9, 'nesterov': False, 'outer_lr': 1.0}
+   13. ~  26 min  {'mode': 'diloco', 'k': 4, 'H': 100, 'steps': 4000, 'seed': 0, 'outer_momentum': 0.0, 'nesterov': False, 'outer_lr': 0.7}
+   14. ~  26 min  {'mode': 'diloco', 'k': 4, 'H': 100, 'steps': 4000, 'seed': 0, 'outer_momentum': 0.0, 'nesterov': False, 'outer_lr': 1.0}
+   15. ~  26 min  {'mode': 'baseline', 'steps': 4000, 'seed': 0, 'batch_size': 128}
+   16. ~   7 min  {'mode': 'baseline', 'steps': 4000, 'seed': 0, 'batch_size': 32}
+   17. ~  13 min  {'mode': 'baseline', 'steps': 4000, 'seed': 0, 'batch_size': 64}
+   18. ~  53 min  {'mode': 'baseline', 'steps': 4000, 'seed': 0, 'batch_size': 256}
+   19. ~  13 min  {'mode': 'diloco', 'steps': 4000, 'outer_lr': 0.7, 'seed': 0, 'k': 2, 'H': 25}
+   20. ~  13 min  {'mode': 'diloco', 'steps': 4000, 'outer_lr': 0.7, 'seed': 0, 'k': 2, 'H': 100}
+   21. ~  13 min  {'mode': 'diloco', 'steps': 4000, 'outer_lr': 0.7, 'seed': 0, 'k': 2, 'H': 500}
+   22. ~  53 min  {'mode': 'diloco', 'steps': 4000, 'outer_lr': 0.7, 'seed': 0, 'k': 8, 'H': 25}
+   23. ~  53 min  {'mode': 'diloco', 'steps': 4000, 'outer_lr': 0.7, 'seed': 0, 'k': 8, 'H': 100}
+   24. ~  53 min  {'mode': 'diloco', 'steps': 4000, 'outer_lr': 0.7, 'seed': 0, 'k': 8, 'H': 500}
+
+===== [1/24] {'steps': 4000, 'mode': 'baseline', 'batch_size': 128, 'seed': 1}  (sweep time so far 0.0 h)
+run: baseline_bs128_steps4000_s1
+params: 30.0M | device: cuda | dtype: bf16
+step     0 | rounds     0 | train   -    | val 10.8935 |    0.0k tok/s |   0.1 min
+step   100 | rounds   100 | train 6.6540 | val 4.0952 |   70.3k tok/s |   0.8 min
+step   200 | rounds   200 | train 3.6513 | val 3.3102 |   76.2k tok/s |   1.4 min
+step   300 | rounds   300 | train 3.0821 | val 2.9110 |   78.4k tok/s |   2.1 min
+step   400 | rounds   400 | train 2.7672 | val 2.6664 |   79.4k tok/s |   2.8 min
+step   500 | rounds   500 | train 2.5694 | val 2.5016 |   80.0k tok/s |   3.4 min
+step   600 | rounds   600 | train 2.4283 | val 2.3792 |   80.5k tok/s |   4.1 min
+step   700 | rounds   700 | train 2.3114 | val 2.2837 |   80.9k tok/s |   4.7 min
+step   800 | rounds   800 | train 2.2348 | val 2.2126 |   81.0k tok/s |   5.4 min
+step   900 | rounds   900 | train 2.1693 | val 2.1578 |   81.1k tok/s |   6.1 min
+step  1000 | rounds  1000 | train 2.1136 | val 2.1063 |   81.3k tok/s |   6.7 min
+step  1100 | rounds  1100 | train 2.0785 | val 2.0667 |   81.5k tok/s |   7.4 min
+step  1200 | rounds  1200 | train 2.0421 | val 2.0319 |   81.5k tok/s |   8.0 min
+step  1300 | rounds  1300 | train 2.0034 | val 2.0019 |   81.6k tok/s |   8.7 min
+step  1400 | rounds  1400 | train 1.9785 | val 1.9752 |   81.6k tok/s |   9.4 min
+step  1500 | rounds  1500 | train 1.9520 | val 1.9507 |   81.7k tok/s |  10.0 min
+step  1600 | rounds  1600 | train 1.9265 | val 1.9300 |   81.7k tok/s |  10.7 min
+step  1700 | rounds  1700 | train 1.9074 | val 1.9079 |   81.8k tok/s |  11.3 min
+step  1800 | rounds  1800 | train 1.8926 | val 1.8885 |   81.9k tok/s |  12.0 min
+step  1900 | rounds  1900 | train 1.8676 | val 1.8733 |   81.9k tok/s |  12.7 min
+step  2000 | rounds  2000 | train 1.8578 | val 1.8574 |   82.0k tok/s |  13.3 min
+step  2100 | rounds  2100 | train 1.8309 | val 1.8415 |   82.0k tok/s |  14.0 min
+step  2200 | rounds  2200 | train 1.8246 | val 1.8274 |   82.0k tok/s |  14.7 min
+step  2300 | rounds  2300 | train 1.8088 | val 1.8160 |   82.0k tok/s |  15.3 min
+step  2400 | rounds  2400 | train 1.7953 | val 1.8028 |   82.0k tok/s |  16.0 min
+step  2500 | rounds  2500 | train 1.7832 | val 1.7899 |   82.1k tok/s |  16.6 min
+step  2600 | rounds  2600 | train 1.7765 | val 1.7813 |   82.1k tok/s |  17.3 min
+step  2700 | rounds  2700 | train 1.7650 | val 1.7730 |   82.1k tok/s |  18.0 min
+step  2800 | rounds  2800 | train 1.7578 | val 1.7626 |   82.1k tok/s |  18.6 min
+step  2900 | rounds  2900 | train 1.7408 | val 1.7525 |   82.1k tok/s |  19.3 min
+step  3000 | rounds  3000 | train 1.7305 | val 1.7450 |   82.2k tok/s |  19.9 min
+step  3100 | rounds  3100 | train 1.7244 | val 1.7352 |   82.2k tok/s |  20.6 min
+step  3200 | rounds  3200 | train 1.7168 | val 1.7299 |   82.2k tok/s |  21.2 min
+step  3300 | rounds  3300 | train 1.7137 | val 1.7236 |   82.2k tok/s |  21.9 min
+step  3400 | rounds  3400 | train 1.7047 | val 1.7179 |   82.2k tok/s |  22.6 min
+step  3500 | rounds  3500 | train 1.7015 | val 1.7124 |   82.3k tok/s |  23.2 min
+step  3600 | rounds  3600 | train 1.6936 | val 1.7090 |   82.3k tok/s |  23.9 min
+step  3700 | rounds  3700 | train 1.6939 | val 1.7046 |   82.3k tok/s |  24.6 min
+step  3800 | rounds  3800 | train 1.6864 | val 1.7017 |   82.3k tok/s |  25.2 min
+step  3900 | rounds  3900 | train 1.6896 | val 1.6985 |   82.3k tok/s |  25.9 min
+step  4000 | rounds  4000 | train 1.6859 | val 1.6970 |   82.3k tok/s |  26.5 min
+done: final val loss 1.6970 | 26.54 min | peak GPU mem 3.81 GB
+
+===== [2/24] {'steps': 4000, 'mode': 'baseline', 'batch_size': 128, 'seed': 2}  (sweep time so far 0.4 h)
+run: baseline_bs128_steps4000_s2
+params: 30.0M | device: cuda | dtype: bf16
+step     0 | rounds     0 | train   -    | val 10.8929 |    0.0k tok/s |   0.1 min
+step   100 | rounds   100 | train 6.6386 | val 4.0777 |   73.5k tok/s |   0.7 min
+step   200 | rounds   200 | train 3.6404 | val 3.3170 |   77.2k tok/s |   1.4 min
+step   300 | rounds   300 | train 3.0737 | val 2.9070 |   79.1k tok/s |   2.1 min
+step   400 | rounds   400 | train 2.7829 | val 2.6707 |   79.8k tok/s |   2.7 min
+step   500 | rounds   500 | train 2.5679 | val 2.5073 |   80.3k tok/s |   3.4 min
+step   600 | rounds   600 | train 2.4257 | val 2.3774 |   80.5k tok/s |   4.1 min
+step   700 | rounds   700 | train 2.3155 | val 2.2918 |   80.5k tok/s |   4.7 min
+step   800 | rounds   800 | train 2.2420 | val 2.2143 |   80.7k tok/s |   5.4 min
+step   900 | rounds   900 | train 2.1734 | val 2.1555 |   80.9k tok/s |   6.1 min
+step  1000 | rounds  1000 | train 2.1210 | val 2.1074 |   81.0k tok/s |   6.7 min
+step  1100 | rounds  1100 | train 2.0818 | val 2.0687 |   81.0k tok/s |   7.4 min
+step  1200 | rounds  1200 | train 2.0457 | val 2.0304 |   81.2k tok/s |   8.1 min
+step  1300 | rounds  1300 | train 2.0049 | val 2.0037 |   81.3k tok/s |   8.7 min
+step  1400 | rounds  1400 | train 1.9803 | val 1.9758 |   81.4k tok/s |   9.4 min
+step  1500 | rounds  1500 | train 1.9544 | val 1.9555 |   81.5k tok/s |  10.1 min
+step  1600 | rounds  1600 | train 1.9355 | val 1.9307 |   81.5k tok/s |  10.7 min
+step  1700 | rounds  1700 | train 1.9076 | val 1.9127 |   81.6k tok/s |  11.4 min
+step  1800 | rounds  1800 | train 1.8931 | val 1.8918 |   81.7k tok/s |  12.0 min
+step  1900 | rounds  1900 | train 1.8688 | val 1.8752 |   81.7k tok/s |  12.7 min
+step  2000 | rounds  2000 | train 1.8514 | val 1.8598 |   81.6k tok/s |  13.4 min
+step  2100 | rounds  2100 | train 1.8366 | val 1.8436 |   81.6k tok/s |  14.1 min
+step  2200 | rounds  2200 | train 1.8255 | val 1.8310 |   81.5k tok/s |  14.7 min
+step  2300 | rounds  2300 | train 1.8076 | val 1.8167 |   81.5k tok/s |  15.4 min
+step  2400 | rounds  2400 | train 1.7939 | val 1.8062 |   81.5k tok/s |  16.1 min
+step  2500 | rounds  2500 | train 1.7858 | val 1.7922 |   81.6k tok/s |  16.7 min
+step  2600 | rounds  2600 | train 1.7770 | val 1.7829 |   81.5k tok/s |  17.4 min
+step  2700 | rounds  2700 | train 1.7632 | val 1.7720 |   81.5k tok/s |  18.1 min
+step  2800 | rounds  2800 | train 1.7582 | val 1.7629 |   81.5k tok/s |  18.8 min
+step  2900 | rounds  2900 | train 1.7473 | val 1.7530 |   81.5k tok/s |  19.4 min
+step  3000 | rounds  3000 | train 1.7405 | val 1.7458 |   81.5k tok/s |  20.1 min
+step  3100 | rounds  3100 | train 1.7263 | val 1.7372 |   81.5k tok/s |  20.8 min
+step  3200 | rounds  3200 | train 1.7236 | val 1.7307 |   81.5k tok/s |  21.4 min
+step  3300 | rounds  3300 | train 1.7078 | val 1.7249 |   81.5k tok/s |  22.1 min
+step  3400 | rounds  3400 | train 1.7044 | val 1.7193 |   81.5k tok/s |  22.8 min
+step  3500 | rounds  3500 | train 1.7049 | val 1.7142 |   81.4k tok/s |  23.5 min
+step  3600 | rounds  3600 | train 1.6961 | val 1.7093 |   81.4k tok/s |  24.1 min
+step  3700 | rounds  3700 | train 1.6964 | val 1.7050 |   81.5k tok/s |  24.8 min
+step  3800 | rounds  3800 | train 1.6925 | val 1.7017 |   81.5k tok/s |  25.5 min
+step  3900 | rounds  3900 | train 1.6878 | val 1.6999 |   81.5k tok/s |  26.1 min
+step  4000 | rounds  4000 | train 1.6849 | val 1.6970 |   81.5k tok/s |  26.8 min
+done: final val loss 1.6970 | 26.8 min | peak GPU mem 3.81 GB
+
+===== [3/24] {'steps': 4000, 'mode': 'baseline', 'batch_size': 32, 'seed': 1}  (sweep time so far 0.9 h)
+run: baseline_bs32_steps4000_s1
+params: 30.0M | device: cuda | dtype: bf16
+step     0 | rounds     0 | train   -    | val 10.8933 |    0.0k tok/s |   0.0 min
+step   100 | rounds   100 | train 6.7561 | val 4.3228 |   65.0k tok/s |   0.2 min
+step   200 | rounds   200 | train 3.9614 | val 3.7073 |   72.4k tok/s |   0.4 min
+step   300 | rounds   300 | train 3.5097 | val 3.3730 |   75.0k tok/s |   0.5 min
+step   400 | rounds   400 | train 3.2230 | val 3.1404 |   76.2k tok/s |   0.7 min
+step   500 | rounds   500 | train 3.0432 | val 2.9894 |   77.1k tok/s |   0.9 min
+step   600 | rounds   600 | train 2.8847 | val 2.8695 |   77.8k tok/s |   1.1 min
+step   700 | rounds   700 | train 2.7994 | val 2.7773 |   78.3k tok/s |   1.2 min
+step   800 | rounds   800 | train 2.6893 | val 2.6891 |   78.5k tok/s |   1.4 min
+step   900 | rounds   900 | train 2.6220 | val 2.6235 |   78.7k tok/s |   1.6 min
+step  1000 | rounds  1000 | train 2.5666 | val 2.5642 |   78.9k tok/s |   1.7 min
+step  1100 | rounds  1100 | train 2.5163 | val 2.5083 |   79.2k tok/s |   1.9 min
+step  1200 | rounds  1200 | train 2.4610 | val 2.4626 |   79.4k tok/s |   2.1 min
+step  1300 | rounds  1300 | train 2.4110 | val 2.4256 |   79.5k tok/s |   2.2 min
+step  1400 | rounds  1400 | train 2.3761 | val 2.3861 |   79.7k tok/s |   2.4 min
+step  1500 | rounds  1500 | train 2.3414 | val 2.3539 |   79.8k tok/s |   2.6 min
+step  1600 | rounds  1600 | train 2.3136 | val 2.3208 |   79.9k tok/s |   2.7 min
+step  1700 | rounds  1700 | train 2.2819 | val 2.2928 |   80.0k tok/s |   2.9 min
+step  1800 | rounds  1800 | train 2.2592 | val 2.2642 |   80.0k tok/s |   3.1 min
+step  1900 | rounds  1900 | train 2.2317 | val 2.2384 |   80.0k tok/s |   3.2 min
+step  2000 | rounds  2000 | train 2.2042 | val 2.2166 |   80.1k tok/s |   3.4 min
+step  2100 | rounds  2100 | train 2.1991 | val 2.1920 |   80.1k tok/s |   3.6 min
+step  2200 | rounds  2200 | train 2.1652 | val 2.1758 |   80.1k tok/s |   3.7 min
+step  2300 | rounds  2300 | train 2.1346 | val 2.1538 |   80.2k tok/s |   3.9 min
+step  2400 | rounds  2400 | train 2.1292 | val 2.1375 |   80.2k tok/s |   4.1 min
+step  2500 | rounds  2500 | train 2.1018 | val 2.1208 |   80.3k tok/s |   4.3 min
+step  2600 | rounds  2600 | train 2.0894 | val 2.1067 |   80.3k tok/s |   4.4 min
+step  2700 | rounds  2700 | train 2.0688 | val 2.0902 |   80.3k tok/s |   4.6 min
+step  2800 | rounds  2800 | train 2.0607 | val 2.0781 |   80.3k tok/s |   4.8 min
+step  2900 | rounds  2900 | train 2.0549 | val 2.0640 |   80.3k tok/s |   4.9 min
+step  3000 | rounds  3000 | train 2.0409 | val 2.0521 |   80.3k tok/s |   5.1 min
+step  3100 | rounds  3100 | train 2.0271 | val 2.0427 |   80.3k tok/s |   5.3 min
+step  3200 | rounds  3200 | train 2.0096 | val 2.0315 |   80.3k tok/s |   5.4 min
+step  3300 | rounds  3300 | train 2.0085 | val 2.0206 |   80.3k tok/s |   5.6 min
+step  3400 | rounds  3400 | train 2.0077 | val 2.0131 |   80.3k tok/s |   5.8 min
+step  3500 | rounds  3500 | train 1.9746 | val 2.0061 |   80.3k tok/s |   5.9 min
+step  3600 | rounds  3600 | train 1.9892 | val 2.0013 |   80.3k tok/s |   6.1 min
+step  3700 | rounds  3700 | train 1.9662 | val 1.9955 |   80.3k tok/s |   6.3 min
+step  3800 | rounds  3800 | train 1.9686 | val 1.9918 |   80.3k tok/s |   6.5 min
+step  3900 | rounds  3900 | train 1.9680 | val 1.9865 |   80.4k tok/s |   6.6 min
+step  4000 | rounds  4000 | train 1.9690 | val 1.9838 |   80.4k tok/s |   6.8 min
+done: final val loss 1.9838 | 6.79 min | peak GPU mem 3.8 GB
+
+===== [4/24] {'steps': 4000, 'mode': 'baseline', 'batch_size': 32, 'seed': 2}  (sweep time so far 1.0 h)
+run: baseline_bs32_steps4000_s2
+params: 30.0M | device: cuda | dtype: bf16
+step     0 | rounds     0 | train   -    | val 10.8917 |    0.0k tok/s |   0.0 min
+step   100 | rounds   100 | train 6.7491 | val 4.3344 |   65.5k tok/s |   0.2 min
+step   200 | rounds   200 | train 3.9577 | val 3.7089 |   72.3k tok/s |   0.4 min
+step   300 | rounds   300 | train 3.4913 | val 3.3708 |   75.3k tok/s |   0.5 min
+step   400 | rounds   400 | train 3.2266 | val 3.1511 |   76.5k tok/s |   0.7 min
+step   500 | rounds   500 | train 3.0514 | val 2.9905 |   77.5k tok/s |   0.9 min
+step   600 | rounds   600 | train 2.8905 | val 2.8770 |   78.2k tok/s |   1.0 min
+step   700 | rounds   700 | train 2.8073 | val 2.7761 |   78.7k tok/s |   1.2 min
+step   800 | rounds   800 | train 2.7083 | val 2.6907 |   79.1k tok/s |   1.4 min
+step   900 | rounds   900 | train 2.6310 | val 2.6258 |   79.3k tok/s |   1.6 min
+step  1000 | rounds  1000 | train 2.5589 | val 2.5704 |   79.5k tok/s |   1.7 min
+step  1100 | rounds  1100 | train 2.5113 | val 2.5139 |   79.7k tok/s |   1.9 min
+step  1200 | rounds  1200 | train 2.4584 | val 2.4685 |   79.8k tok/s |   2.1 min
+step  1300 | rounds  1300 | train 2.4267 | val 2.4256 |   79.8k tok/s |   2.2 min
+step  1400 | rounds  1400 | train 2.3933 | val 2.3892 |   80.0k tok/s |   2.4 min
+step  1500 | rounds  1500 | train 2.3641 | val 2.3503 |   80.0k tok/s |   2.6 min
+step  1600 | rounds  1600 | train 2.3272 | val 2.3140 |   80.1k tok/s |   2.7 min
+step  1700 | rounds  1700 | train 2.2695 | val 2.2903 |   80.2k tok/s |   2.9 min
+step  1800 | rounds  1800 | train 2.2612 | val 2.2630 |   80.2k tok/s |   3.1 min
+step  1900 | rounds  1900 | train 2.2179 | val 2.2378 |   80.3k tok/s |   3.2 min
+step  2000 | rounds  2000 | train 2.2182 | val 2.2186 |   80.3k tok/s |   3.4 min
+step  2100 | rounds  2100 | train 2.1819 | val 2.1976 |   80.3k tok/s |   3.6 min
+step  2200 | rounds  2200 | train 2.1644 | val 2.1776 |   80.3k tok/s |   3.7 min
+step  2300 | rounds  2300 | train 2.1464 | val 2.1565 |   80.3k tok/s |   3.9 min
+step  2400 | rounds  2400 | train 2.1263 | val 2.1378 |   80.4k tok/s |   4.1 min
+step  2500 | rounds  2500 | train 2.1097 | val 2.1188 |   80.4k tok/s |   4.2 min
+step  2600 | rounds  2600 | train 2.0896 | val 2.1060 |   80.5k tok/s |   4.4 min
+step  2700 | rounds  2700 | train 2.0639 | val 2.0925 |   80.5k tok/s |   4.6 min
+step  2800 | rounds  2800 | train 2.0695 | val 2.0769 |   80.5k tok/s |   4.7 min
+step  2900 | rounds  2900 | train 2.0472 | val 2.0654 |   80.5k tok/s |   4.9 min
+step  3000 | rounds  3000 | train 2.0413 | val 2.0506 |   80.6k tok/s |   5.1 min
+step  3100 | rounds  3100 | train 2.0384 | val 2.0408 |   80.6k tok/s |   5.3 min
+step  3200 | rounds  3200 | train 2.0216 | val 2.0308 |   80.6k tok/s |   5.4 min
+step  3300 | rounds  3300 | train 2.0119 | val 2.0222 |   80.6k tok/s |   5.6 min
+step  3400 | rounds  3400 | train 1.9942 | val 2.0147 |   80.6k tok/s |   5.8 min
+step  3500 | rounds  3500 | train 1.9924 | val 2.0067 |   80.7k tok/s |   5.9 min
+step  3600 | rounds  3600 | train 1.9871 | val 2.0008 |   80.7k tok/s |   6.1 min
+step  3700 | rounds  3700 | train 1.9656 | val 1.9954 |   80.7k tok/s |   6.3 min
+step  3800 | rounds  3800 | train 1.9804 | val 1.9905 |   80.7k tok/s |   6.4 min
+step  3900 | rounds  3900 | train 1.9787 | val 1.9851 |   80.7k tok/s |   6.6 min
+step  4000 | rounds  4000 | train 1.9598 | val 1.9834 |   80.7k tok/s |   6.8 min
+done: final val loss 1.9834 | 6.76 min | peak GPU mem 3.8 GB
+
+===== [5/24] {'steps': 4000, 'mode': 'diloco', 'k': 4, 'H': 25, 'outer_lr': 0.7, 'seed': 1}  (sweep time so far 1.1 h)
+run: diloco_k4_H25_olr0.7_m0.9_nest_steps4000_s1
+params: 30.0M | device: cuda | dtype: bf16
+step     0 | rounds     0 | train   -    | val 10.8933 |    0.0k tok/s |   0.0 min
+step   100 | rounds     4 | train 6.6145 | val 4.2785 |   80.0k tok/s |   0.7 min
+step   200 | rounds     8 | train 3.8557 | val 3.5748 |   82.7k tok/s |   1.3 min
+step   300 | rounds    12 | train 3.3325 | val 3.1332 |   83.7k tok/s |   2.0 min
+step   400 | rounds    16 | train 3.0073 | val 2.8790 |   84.3k tok/s |   2.6 min
+step   500 | rounds    20 | train 2.8013 | val 2.7098 |   84.5k tok/s |   3.2 min
+step   600 | rounds    24 | train 2.6522 | val 2.5852 |   84.7k tok/s |   3.9 min
+step   700 | rounds    28 | train 2.5330 | val 2.4842 |   84.7k tok/s |   4.5 min
+step   800 | rounds    32 | train 2.4490 | val 2.4101 |   84.8k tok/s |   5.2 min
+step   900 | rounds    36 | train 2.3688 | val 2.3398 |   84.9k tok/s |   5.8 min
+step  1000 | rounds    40 | train 2.3154 | val 2.2834 |   85.0k tok/s |   6.4 min
+step  1100 | rounds    44 | train 2.2609 | val 2.2305 |   85.0k tok/s |   7.1 min
+step  1200 | rounds    48 | train 2.2110 | val 2.1931 |   85.1k tok/s |   7.7 min
+step  1300 | rounds    52 | train 2.1697 | val 2.1527 |   85.1k tok/s |   8.3 min
+step  1400 | rounds    56 | train 2.1429 | val 2.1243 |   85.1k tok/s |   9.0 min
+step  1500 | rounds    60 | train 2.1091 | val 2.0976 |   85.2k tok/s |   9.6 min
+step  1600 | rounds    64 | train 2.0815 | val 2.0682 |   85.2k tok/s |  10.3 min
+step  1700 | rounds    68 | train 2.0597 | val 2.0444 |   85.1k tok/s |  10.9 min
+step  1800 | rounds    72 | train 2.0294 | val 2.0214 |   85.2k tok/s |  11.5 min
+step  1900 | rounds    76 | train 2.0144 | val 2.0043 |   85.2k tok/s |  12.2 min
+step  2000 | rounds    80 | train 1.9921 | val 1.9831 |   85.2k tok/s |  12.8 min
+step  2100 | rounds    84 | train 1.9688 | val 1.9673 |   85.2k tok/s |  13.5 min
+step  2200 | rounds    88 | train 1.9523 | val 1.9516 |   85.3k tok/s |  14.1 min
+step  2300 | rounds    92 | train 1.9390 | val 1.9376 |   85.3k tok/s |  14.7 min
+step  2400 | rounds    96 | train 1.9238 | val 1.9220 |   85.3k tok/s |  15.4 min
+step  2500 | rounds   100 | train 1.9060 | val 1.9087 |   85.3k tok/s |  16.0 min
+step  2600 | rounds   104 | train 1.8973 | val 1.8970 |   85.3k tok/s |  16.6 min
+step  2700 | rounds   108 | train 1.8862 | val 1.8848 |   85.4k tok/s |  17.3 min
+step  2800 | rounds   112 | train 1.8675 | val 1.8741 |   85.4k tok/s |  17.9 min
+step  2900 | rounds   116 | train 1.8575 | val 1.8626 |   85.4k tok/s |  18.5 min
+step  3000 | rounds   120 | train 1.8459 | val 1.8522 |   85.4k tok/s |  19.2 min
+step  3100 | rounds   124 | train 1.8328 | val 1.8437 |   85.4k tok/s |  19.8 min
+step  3200 | rounds   128 | train 1.8315 | val 1.8348 |   85.4k tok/s |  20.5 min
+step  3300 | rounds   132 | train 1.8176 | val 1.8262 |   85.4k tok/s |  21.1 min
+step  3400 | rounds   136 | train 1.8101 | val 1.8186 |   85.4k tok/s |  21.7 min
+step  3500 | rounds   140 | train 1.8038 | val 1.8115 |   85.4k tok/s |  22.4 min
+step  3600 | rounds   144 | train 1.7855 | val 1.8049 |   85.4k tok/s |  23.0 min
+step  3700 | rounds   148 | train 1.7898 | val 1.7989 |   85.4k tok/s |  23.6 min
+step  3800 | rounds   152 | train 1.7789 | val 1.7938 |   85.5k tok/s |  24.3 min
+step  3900 | rounds   156 | train 1.7738 | val 1.7881 |   85.5k tok/s |  24.9 min
+step  4000 | rounds   160 | train 1.7744 | val 1.7843 |   85.5k tok/s |  25.6 min
+done: final val loss 1.7843 | 25.56 min | peak GPU mem 4.89 GB
+
+===== [6/24] {'steps': 4000, 'mode': 'diloco', 'k': 4, 'H': 25, 'outer_lr': 0.7, 'seed': 2}  (sweep time so far 1.5 h)
+run: diloco_k4_H25_olr0.7_m0.9_nest_steps4000_s2
+params: 30.0M | device: cuda | dtype: bf16
+step     0 | rounds     0 | train   -    | val 10.8917 |    0.0k tok/s |   0.0 min
+step   100 | rounds     4 | train 6.5969 | val 4.2609 |   79.8k tok/s |   0.7 min
+step   200 | rounds     8 | train 3.8307 | val 3.5541 |   83.0k tok/s |   1.3 min
+step   300 | rounds    12 | train 3.3144 | val 3.1335 |   84.0k tok/s |   2.0 min
+step   400 | rounds    16 | train 3.0110 | val 2.8801 |   84.3k tok/s |   2.6 min
+step   500 | rounds    20 | train 2.8124 | val 2.7129 |   84.6k tok/s |   3.2 min
+step   600 | rounds    24 | train 2.6563 | val 2.5913 |   84.8k tok/s |   3.9 min
+step   700 | rounds    28 | train 2.5455 | val 2.4912 |   85.0k tok/s |   4.5 min
+step   800 | rounds    32 | train 2.4527 | val 2.4151 |   85.1k tok/s |   5.1 min
+step   900 | rounds    36 | train 2.3825 | val 2.3468 |   85.2k tok/s |   5.8 min
+step  1000 | rounds    40 | train 2.3232 | val 2.2912 |   85.3k tok/s |   6.4 min
+step  1100 | rounds    44 | train 2.2722 | val 2.2450 |   85.3k tok/s |   7.0 min
+step  1200 | rounds    48 | train 2.2324 | val 2.2030 |   85.3k tok/s |   7.7 min
+step  1300 | rounds    52 | train 2.1849 | val 2.1666 |   85.4k tok/s |   8.3 min
+step  1400 | rounds    56 | train 2.1557 | val 2.1355 |   85.4k tok/s |   9.0 min
+step  1500 | rounds    60 | train 2.1215 | val 2.1088 |   85.4k tok/s |   9.6 min
+step  1600 | rounds    64 | train 2.0941 | val 2.0801 |   85.4k tok/s |  10.2 min
+step  1700 | rounds    68 | train 2.0645 | val 2.0586 |   85.4k tok/s |  10.9 min
+step  1800 | rounds    72 | train 2.0423 | val 2.0343 |   85.5k tok/s |  11.5 min
+step  1900 | rounds    76 | train 2.0192 | val 2.0133 |   85.5k tok/s |  12.1 min
+step  2000 | rounds    80 | train 2.0016 | val 1.9964 |   85.5k tok/s |  12.8 min
+step  2100 | rounds    84 | train 1.9766 | val 1.9805 |   85.5k tok/s |  13.4 min
+step  2200 | rounds    88 | train 1.9680 | val 1.9616 |   85.5k tok/s |  14.1 min
+step  2300 | rounds    92 | train 1.9542 | val 1.9478 |   85.5k tok/s |  14.7 min
+step  2400 | rounds    96 | train 1.9310 | val 1.9358 |   85.5k tok/s |  15.3 min
+step  2500 | rounds   100 | train 1.9228 | val 1.9217 |   85.5k tok/s |  16.0 min
+step  2600 | rounds   104 | train 1.9052 | val 1.9086 |   85.5k tok/s |  16.6 min
+step  2700 | rounds   108 | train 1.8952 | val 1.8935 |   85.5k tok/s |  17.2 min
+step  2800 | rounds   112 | train 1.8817 | val 1.8831 |   85.5k tok/s |  17.9 min
+step  2900 | rounds   116 | train 1.8684 | val 1.8713 |   85.5k tok/s |  18.5 min
+step  3000 | rounds   120 | train 1.8587 | val 1.8606 |   85.6k tok/s |  19.1 min
+step  3100 | rounds   124 | train 1.8497 | val 1.8504 |   85.6k tok/s |  19.8 min
+step  3200 | rounds   128 | train 1.8370 | val 1.8431 |   85.6k tok/s |  20.4 min
+step  3300 | rounds   132 | train 1.8214 | val 1.8355 |   85.6k tok/s |  21.1 min
+step  3400 | rounds   136 | train 1.8168 | val 1.8292 |   85.6k tok/s |  21.7 min
+step  3500 | rounds   140 | train 1.8124 | val 1.8205 |   85.6k tok/s |  22.3 min
+step  3600 | rounds   144 | train 1.7984 | val 1.8143 |   85.6k tok/s |  23.0 min
+step  3700 | rounds   148 | train 1.7946 | val 1.8084 |   85.6k tok/s |  23.6 min
+step  3800 | rounds   152 | train 1.7863 | val 1.8035 |   85.6k tok/s |  24.3 min
+step  3900 | rounds   156 | train 1.7815 | val 1.7985 |   85.6k tok/s |  24.9 min
+step  4000 | rounds   160 | train 1.7797 | val 1.7931 |   85.6k tok/s |  25.5 min
+done: final val loss 1.7931 | 25.52 min | peak GPU mem 4.89 GB
+
+===== [7/24] {'steps': 4000, 'mode': 'diloco', 'k': 4, 'H': 100, 'outer_lr': 0.7, 'seed': 1}  (sweep time so far 2.0 h)
+run: diloco_k4_H100_olr0.7_m0.9_nest_steps4000_s1
+params: 30.0M | device: cuda | dtype: bf16
+step     0 | rounds     0 | train   -    | val 10.8933 |    0.0k tok/s |   0.0 min
+step   100 | rounds     1 | train 6.7608 | val 4.3390 |   80.2k tok/s |   0.7 min
+step   200 | rounds     2 | train 3.9237 | val 3.8913 |   83.3k tok/s |   1.3 min
+step   300 | rounds     3 | train 3.4565 | val 3.5281 |   84.0k tok/s |   1.9 min
+step   400 | rounds     4 | train 3.1552 | val 3.1528 |   84.3k tok/s |   2.6 min
+step   500 | rounds     5 | train 2.9445 | val 2.8908 |   84.6k tok/s |   3.2 min
+step   600 | rounds     6 | train 2.7892 | val 2.6999 |   84.8k tok/s |   3.9 min
+step   700 | rounds     7 | train 2.6609 | val 2.5789 |   84.9k tok/s |   4.5 min
+step   800 | rounds     8 | train 2.5721 | val 2.4922 |   85.0k tok/s |   5.1 min
+step   900 | rounds     9 | train 2.4854 | val 2.4195 |   85.1k tok/s |   5.8 min
+step  1000 | rounds    10 | train 2.4262 | val 2.3590 |   85.2k tok/s |   6.4 min
+step  1100 | rounds    11 | train 2.3661 | val 2.3062 |   85.2k tok/s |   7.0 min
+step  1200 | rounds    12 | train 2.3129 | val 2.2631 |   85.3k tok/s |   7.7 min
+step  1300 | rounds    13 | train 2.2672 | val 2.2257 |   85.3k tok/s |   8.3 min
+step  1400 | rounds    14 | train 2.2356 | val 2.1899 |   85.3k tok/s |   9.0 min
+step  1500 | rounds    15 | train 2.1994 | val 2.1654 |   85.4k tok/s |   9.6 min
+step  1600 | rounds    16 | train 2.1692 | val 2.1333 |   85.4k tok/s |  10.2 min
+step  1700 | rounds    17 | train 2.1449 | val 2.1108 |   85.4k tok/s |  10.9 min
+step  1800 | rounds    18 | train 2.1124 | val 2.0902 |   85.4k tok/s |  11.5 min
+step  1900 | rounds    19 | train 2.0957 | val 2.0703 |   85.5k tok/s |  12.1 min
+step  2000 | rounds    20 | train 2.0730 | val 2.0516 |   85.5k tok/s |  12.8 min
+step  2100 | rounds    21 | train 2.0502 | val 2.0340 |   85.5k tok/s |  13.4 min
+step  2200 | rounds    22 | train 2.0326 | val 2.0210 |   85.5k tok/s |  14.0 min
+step  2300 | rounds    23 | train 2.0189 | val 2.0079 |   85.5k tok/s |  14.7 min
+step  2400 | rounds    24 | train 2.0043 | val 1.9967 |   85.6k tok/s |  15.3 min
+step  2500 | rounds    25 | train 1.9870 | val 1.9832 |   85.6k tok/s |  16.0 min
+step  2600 | rounds    26 | train 1.9792 | val 1.9710 |   85.6k tok/s |  16.6 min
+step  2700 | rounds    27 | train 1.9701 | val 1.9635 |   85.6k tok/s |  17.2 min
+step  2800 | rounds    28 | train 1.9526 | val 1.9538 |   85.6k tok/s |  17.9 min
+step  2900 | rounds    29 | train 1.9438 | val 1.9466 |   85.6k tok/s |  18.5 min
+step  3000 | rounds    30 | train 1.9334 | val 1.9386 |   85.6k tok/s |  19.1 min
+step  3100 | rounds    31 | train 1.9226 | val 1.9316 |   85.6k tok/s |  19.8 min
+step  3200 | rounds    32 | train 1.9225 | val 1.9261 |   85.6k tok/s |  20.4 min
+step  3300 | rounds    33 | train 1.9100 | val 1.9190 |   85.6k tok/s |  21.0 min
+step  3400 | rounds    34 | train 1.9047 | val 1.9132 |   85.6k tok/s |  21.7 min
+step  3500 | rounds    35 | train 1.8996 | val 1.9088 |   85.6k tok/s |  22.3 min
+step  3600 | rounds    36 | train 1.8828 | val 1.9039 |   85.6k tok/s |  23.0 min
+step  3700 | rounds    37 | train 1.8883 | val 1.8993 |   85.6k tok/s |  23.6 min
+step  3800 | rounds    38 | train 1.8787 | val 1.8943 |   85.7k tok/s |  24.2 min
+step  3900 | rounds    39 | train 1.8752 | val 1.8905 |   85.7k tok/s |  24.9 min
+step  4000 | rounds    40 | train 1.8757 | val 1.8864 |   85.7k tok/s |  25.5 min
+done: final val loss 1.8864 | 25.5 min | peak GPU mem 4.89 GB
+
+===== [8/24] {'steps': 4000, 'mode': 'diloco', 'k': 4, 'H': 100, 'outer_lr': 0.7, 'seed': 2}  (sweep time so far 2.4 h)
+run: diloco_k4_H100_olr0.7_m0.9_nest_steps4000_s2
+params: 30.0M | device: cuda | dtype: bf16
+step     0 | rounds     0 | train   -    | val 10.8917 |    0.0k tok/s |   0.0 min
+step   100 | rounds     1 | train 6.7450 | val 4.3204 |   80.2k tok/s |   0.7 min
+step   200 | rounds     2 | train 3.9015 | val 3.8523 |   83.3k tok/s |   1.3 min
+step   300 | rounds     3 | train 3.4387 | val 3.5652 |   84.3k tok/s |   1.9 min
+step   400 | rounds     4 | train 3.1553 | val 3.1583 |   84.7k tok/s |   2.6 min
+step   500 | rounds     5 | train 2.9467 | val 2.8849 |   85.0k tok/s |   3.2 min
+step   600 | rounds     6 | train 2.7838 | val 2.6978 |   85.2k tok/s |   3.8 min
+step   700 | rounds     7 | train 2.6629 | val 2.5794 |   85.2k tok/s |   4.5 min
+step   800 | rounds     8 | train 2.5649 | val 2.4900 |   85.2k tok/s |   5.1 min
+step   900 | rounds     9 | train 2.4898 | val 2.4174 |   85.3k tok/s |   5.8 min
+step  1000 | rounds    10 | train 2.4252 | val 2.3587 |   85.4k tok/s |   6.4 min
+step  1100 | rounds    11 | train 2.3699 | val 2.3085 |   85.4k tok/s |   7.0 min
+step  1200 | rounds    12 | train 2.3268 | val 2.2659 |   85.4k tok/s |   7.7 min
+step  1300 | rounds    13 | train 2.2754 | val 2.2290 |   85.4k tok/s |   8.3 min
+step  1400 | rounds    14 | train 2.2431 | val 2.1961 |   85.5k tok/s |   8.9 min
+step  1500 | rounds    15 | train 2.2065 | val 2.1694 |   85.5k tok/s |   9.6 min
+step  1600 | rounds    16 | train 2.1767 | val 2.1410 |   85.5k tok/s |  10.2 min
+step  1700 | rounds    17 | train 2.1455 | val 2.1189 |   85.5k tok/s |  10.9 min
+step  1800 | rounds    18 | train 2.1207 | val 2.0960 |   85.5k tok/s |  11.5 min
+step  1900 | rounds    19 | train 2.0976 | val 2.0775 |   85.5k tok/s |  12.1 min
+step  2000 | rounds    20 | train 2.0791 | val 2.0579 |   85.6k tok/s |  12.8 min
+step  2100 | rounds    21 | train 2.0528 | val 2.0420 |   85.6k tok/s |  13.4 min
+step  2200 | rounds    22 | train 2.0456 | val 2.0284 |   85.6k tok/s |  14.0 min
+step  2300 | rounds    23 | train 2.0320 | val 2.0131 |   85.6k tok/s |  14.7 min
+step  2400 | rounds    24 | train 2.0098 | val 2.0005 |   85.6k tok/s |  15.3 min
+step  2500 | rounds    25 | train 2.0013 | val 1.9885 |   85.6k tok/s |  16.0 min
+step  2600 | rounds    26 | train 1.9846 | val 1.9776 |   85.6k tok/s |  16.6 min
+step  2700 | rounds    27 | train 1.9766 | val 1.9681 |   85.6k tok/s |  17.2 min
+step  2800 | rounds    28 | train 1.9633 | val 1.9590 |   85.6k tok/s |  17.9 min
+step  2900 | rounds    29 | train 1.9515 | val 1.9504 |   85.6k tok/s |  18.5 min
+step  3000 | rounds    30 | train 1.9434 | val 1.9441 |   85.6k tok/s |  19.1 min
+step  3100 | rounds    31 | train 1.9364 | val 1.9344 |   85.6k tok/s |  19.8 min
+step  3200 | rounds    32 | train 1.9247 | val 1.9287 |   85.7k tok/s |  20.4 min
+step  3300 | rounds    33 | train 1.9116 | val 1.9234 |   85.7k tok/s |  21.0 min
+step  3400 | rounds    34 | train 1.9084 | val 1.9190 |   85.7k tok/s |  21.7 min
+step  3500 | rounds    35 | train 1.9056 | val 1.9144 |   85.7k tok/s |  22.3 min
+step  3600 | rounds    36 | train 1.8939 | val 1.9083 |   85.7k tok/s |  22.9 min
+step  3700 | rounds    37 | train 1.8911 | val 1.9032 |   85.7k tok/s |  23.6 min
+step  3800 | rounds    38 | train 1.8840 | val 1.8995 |   85.7k tok/s |  24.2 min
+step  3900 | rounds    39 | train 1.8808 | val 1.8956 |   85.7k tok/s |  24.9 min
+step  4000 | rounds    40 | train 1.8794 | val 1.8919 |   85.7k tok/s |  25.5 min
+done: final val loss 1.8919 | 25.49 min | peak GPU mem 4.89 GB
+
+===== [9/24] {'steps': 4000, 'mode': 'diloco', 'k': 4, 'H': 500, 'outer_lr': 0.7, 'seed': 1}  (sweep time so far 2.8 h)
+run: diloco_k4_H500_olr0.7_m0.9_nest_steps4000_s1
+params: 30.0M | device: cuda | dtype: bf16
+step     0 | rounds     0 | train   -    | val 10.8933 |    0.0k tok/s |   0.0 min
+step   500 | rounds     1 | train 4.0962 | val 3.1584 |   85.7k tok/s |   3.2 min
+step  1000 | rounds     2 | train 2.6860 | val 3.0140 |   86.4k tok/s |   6.3 min
+step  1500 | rounds     3 | train 2.3769 | val 2.4573 |   86.6k tok/s |   9.5 min
+step  2000 | rounds     4 | train 2.1995 | val 2.1594 |   86.8k tok/s |  12.6 min
+step  2500 | rounds     5 | train 2.0810 | val 2.0423 |   86.8k tok/s |  15.7 min
+step  3000 | rounds     6 | train 2.0057 | val 1.9825 |   86.9k tok/s |  18.9 min
+step  3500 | rounds     7 | train 1.9560 | val 1.9524 |   86.9k tok/s |  22.0 min
+step  4000 | rounds     8 | train 1.9255 | val 1.9347 |   86.9k tok/s |  25.1 min
+done: final val loss 1.9347 | 25.13 min | peak GPU mem 4.89 GB
+
+===== [10/24] {'steps': 4000, 'mode': 'diloco', 'k': 4, 'H': 500, 'outer_lr': 0.7, 'seed': 2}  (sweep time so far 3.2 h)
+run: diloco_k4_H500_olr0.7_m0.9_nest_steps4000_s2
+params: 30.0M | device: cuda | dtype: bf16
+step     0 | rounds     0 | train   -    | val 10.8917 |    0.0k tok/s |   0.0 min
+step   500 | rounds     1 | train 4.0881 | val 3.1526 |   85.8k tok/s |   3.2 min
+step  1000 | rounds     2 | train 2.6902 | val 3.0372 |   86.4k tok/s |   6.3 min
+step  1500 | rounds     3 | train 2.3878 | val 2.4718 |   86.7k tok/s |   9.4 min
+step  2000 | rounds     4 | train 2.2049 | val 2.1691 |   86.8k tok/s |  12.6 min
+step  2500 | rounds     5 | train 2.0891 | val 2.0476 |   86.9k tok/s |  15.7 min
+step  3000 | rounds     6 | train 2.0127 | val 1.9912 |   86.9k tok/s |  18.8 min
+step  3500 | rounds     7 | train 1.9606 | val 1.9578 |   87.0k tok/s |  22.0 min
+step  4000 | rounds     8 | train 1.9294 | val 1.9381 |   87.0k tok/s |  25.1 min
+done: final val loss 1.9381 | 25.1 min | peak GPU mem 4.89 GB
+
+===== [11/24] {'mode': 'diloco', 'k': 4, 'H': 100, 'steps': 4000, 'seed': 0, 'outer_momentum': 0.9, 'nesterov': False, 'outer_lr': 0.7}  (sweep time so far 3.7 h)
+run: diloco_k4_H100_olr0.7_m0.9_steps4000_s0
+params: 30.0M | device: cuda | dtype: bf16
+step     0 | rounds     0 | train   -    | val 10.8652 |    0.0k tok/s |   0.0 min
+step   100 | rounds     1 | train 6.7335 | val 4.6696 |   79.7k tok/s |   0.7 min
+step   200 | rounds     2 | train 4.0187 | val 4.2664 |   82.8k tok/s |   1.3 min
+step   300 | rounds     3 | train 3.5999 | val 4.4476 |   83.8k tok/s |   2.0 min
+step   400 | rounds     4 | train 3.3683 | val 4.5396 |   84.2k tok/s |   2.6 min
+step   500 | rounds     5 | train 3.2050 | val 3.9428 |   84.5k tok/s |   3.2 min
+step   600 | rounds     6 | train 3.0334 | val 3.7617 |   84.7k tok/s |   3.9 min
+step   700 | rounds     7 | train 2.9137 | val 3.6491 |   84.7k tok/s |   4.5 min
+step   800 | rounds     8 | train 2.8252 | val 3.1149 |   84.8k tok/s |   5.2 min
+step   900 | rounds     9 | train 2.7165 | val 2.8135 |   84.9k tok/s |   5.8 min
+step  1000 | rounds    10 | train 2.6256 | val 2.6899 |   85.0k tok/s |   6.4 min
+step  1100 | rounds    11 | train 2.5723 | val 2.6004 |   85.0k tok/s |   7.1 min
+step  1200 | rounds    12 | train 2.5106 | val 2.5443 |   85.1k tok/s |   7.7 min
+step  1300 | rounds    13 | train 2.4724 | val 2.4880 |   85.2k tok/s |   8.3 min
+step  1400 | rounds    14 | train 2.4162 | val 2.4346 |   85.2k tok/s |   9.0 min
+step  1500 | rounds    15 | train 2.3776 | val 2.3985 |   85.2k tok/s |   9.6 min
+step  1600 | rounds    16 | train 2.3429 | val 2.3639 |   85.2k tok/s |  10.3 min
+step  1700 | rounds    17 | train 2.3105 | val 2.3220 |   85.3k tok/s |  10.9 min
+step  1800 | rounds    18 | train 2.2800 | val 2.2900 |   85.3k tok/s |  11.5 min
+step  1900 | rounds    19 | train 2.2561 | val 2.2725 |   85.3k tok/s |  12.2 min
+step  2000 | rounds    20 | train 2.2319 | val 2.2541 |   85.4k tok/s |  12.8 min
+step  2100 | rounds    21 | train 2.2137 | val 2.2336 |   85.4k tok/s |  13.4 min
+step  2200 | rounds    22 | train 2.1909 | val 2.2173 |   85.4k tok/s |  14.1 min
+step  2300 | rounds    23 | train 2.1671 | val 2.2021 |   85.4k tok/s |  14.7 min
+step  2400 | rounds    24 | train 2.1558 | val 2.1849 |   85.4k tok/s |  15.3 min
+step  2500 | rounds    25 | train 2.1424 | val 2.1692 |   85.4k tok/s |  16.0 min
+step  2600 | rounds    26 | train 2.1245 | val 2.1568 |   85.5k tok/s |  16.6 min
+step  2700 | rounds    27 | train 2.1057 | val 2.1446 |   85.5k tok/s |  17.3 min
+step  2800 | rounds    28 | train 2.1074 | val 2.1334 |   85.5k tok/s |  17.9 min
+step  2900 | rounds    29 | train 2.0861 | val 2.1239 |   85.5k tok/s |  18.5 min
+step  3000 | rounds    30 | train 2.0823 | val 2.1145 |   85.5k tok/s |  19.2 min
+step  3100 | rounds    31 | train 2.0678 | val 2.1033 |   85.5k tok/s |  19.8 min
+step  3200 | rounds    32 | train 2.0652 | val 2.0939 |   85.5k tok/s |  20.4 min
+step  3300 | rounds    33 | train 2.0476 | val 2.0859 |   85.5k tok/s |  21.1 min
+step  3400 | rounds    34 | train 2.0485 | val 2.0782 |   85.6k tok/s |  21.7 min
+step  3500 | rounds    35 | train 2.0454 | val 2.0708 |   85.6k tok/s |  22.3 min
+step  3600 | rounds    36 | train 2.0366 | val 2.0649 |   85.6k tok/s |  23.0 min
+step  3700 | rounds    37 | train 2.0299 | val 2.0582 |   85.6k tok/s |  23.6 min
+step  3800 | rounds    38 | train 2.0245 | val 2.0502 |   85.6k tok/s |  24.3 min
+step  3900 | rounds    39 | train 2.0187 | val 2.0431 |   85.6k tok/s |  24.9 min
+step  4000 | rounds    40 | train 2.0183 | val 2.0369 |   85.6k tok/s |  25.5 min
+done: final val loss 2.0369 | 25.53 min | peak GPU mem 4.89 GB
+
+===== [12/24] {'mode': 'diloco', 'k': 4, 'H': 100, 'steps': 4000, 'seed': 0, 'outer_momentum': 0.9, 'nesterov': False, 'outer_lr': 1.0}  (sweep time so far 4.1 h)
+run: diloco_k4_H100_olr1.0_m0.9_steps4000_s0
+params: 30.0M | device: cuda | dtype: bf16
+step     0 | rounds     0 | train   -    | val 10.8652 |    0.0k tok/s |   0.0 min
+step   100 | rounds     1 | train 6.7335 | val 4.2589 |   79.4k tok/s |   0.7 min
+step   200 | rounds     2 | train 3.9236 | val 4.6644 |   82.4k tok/s |   1.3 min
+step   300 | rounds     3 | train 3.5470 | val 4.9465 |   83.5k tok/s |   2.0 min
+step   400 | rounds     4 | train 3.3204 | val 4.2172 |   84.1k tok/s |   2.6 min
+step   500 | rounds     5 | train 3.1191 | val 3.9867 |   84.5k tok/s |   3.2 min
+step   600 | rounds     6 | train 2.9676 | val 3.6982 |   84.7k tok/s |   3.9 min
+step   700 | rounds     7 | train 2.8491 | val 3.0539 |   84.8k tok/s |   4.5 min
+step   800 | rounds     8 | train 2.7333 | val 2.8152 |   84.9k tok/s |   5.1 min
+step   900 | rounds     9 | train 2.6421 | val 2.6989 |   85.1k tok/s |   5.8 min
+step  1000 | rounds    10 | train 2.5604 | val 2.6176 |   85.1k tok/s |   6.4 min
+step  1100 | rounds    11 | train 2.5101 | val 2.5465 |   85.2k tok/s |   7.1 min
+step  1200 | rounds    12 | train 2.4527 | val 2.4872 |   85.2k tok/s |   7.7 min
+step  1300 | rounds    13 | train 2.4171 | val 2.4410 |   85.3k tok/s |   8.3 min
+step  1400 | rounds    14 | train 2.3632 | val 2.3941 |   85.3k tok/s |   9.0 min
+step  1500 | rounds    15 | train 2.3277 | val 2.3620 |   85.4k tok/s |   9.6 min
+step  1600 | rounds    16 | train 2.2962 | val 2.3340 |   85.4k tok/s |  10.2 min
+step  1700 | rounds    17 | train 2.2665 | val 2.3035 |   85.4k tok/s |  10.9 min
+step  1800 | rounds    18 | train 2.2382 | val 2.2866 |   85.3k tok/s |  11.5 min
+step  1900 | rounds    19 | train 2.2187 | val 2.2699 |   85.3k tok/s |  12.2 min
+step  2000 | rounds    20 | train 2.1974 | val 2.2379 |   85.3k tok/s |  12.8 min
+step  2100 | rounds    21 | train 2.1799 | val 2.2154 |   85.4k tok/s |  13.4 min
+step  2200 | rounds    22 | train 2.1585 | val 2.2039 |   85.4k tok/s |  14.1 min
+step  2300 | rounds    23 | train 2.1380 | val 2.1927 |   85.4k tok/s |  14.7 min
+step  2400 | rounds    24 | train 2.1293 | val 2.1732 |   85.4k tok/s |  15.4 min
+step  2500 | rounds    25 | train 2.1159 | val 2.1577 |   85.4k tok/s |  16.0 min
+step  2600 | rounds    26 | train 2.0997 | val 2.1417 |   85.4k tok/s |  16.6 min
+step  2700 | rounds    27 | train 2.0828 | val 2.1294 |   85.4k tok/s |  17.3 min
+step  2800 | rounds    28 | train 2.0855 | val 2.1183 |   85.4k tok/s |  17.9 min
+step  2900 | rounds    29 | train 2.0649 | val 2.1088 |   85.4k tok/s |  18.5 min
+step  3000 | rounds    30 | train 2.0631 | val 2.1044 |   85.4k tok/s |  19.2 min
+step  3100 | rounds    31 | train 2.0511 | val 2.0954 |   85.5k tok/s |  19.8 min
+step  3200 | rounds    32 | train 2.0488 | val 2.0839 |   85.5k tok/s |  20.4 min
+step  3300 | rounds    33 | train 2.0327 | val 2.0769 |   85.5k tok/s |  21.1 min
+step  3400 | rounds    34 | train 2.0346 | val 2.0694 |   85.5k tok/s |  21.7 min
+step  3500 | rounds    35 | train 2.0325 | val 2.0653 |   85.5k tok/s |  22.4 min
+step  3600 | rounds    36 | train 2.0255 | val 2.0603 |   85.5k tok/s |  23.0 min
+step  3700 | rounds    37 | train 2.0188 | val 2.0510 |   85.5k tok/s |  23.6 min
+step  3800 | rounds    38 | train 2.0134 | val 2.0432 |   85.5k tok/s |  24.3 min
+step  3900 | rounds    39 | train 2.0080 | val 2.0360 |   85.5k tok/s |  24.9 min
+step  4000 | rounds    40 | train 2.0074 | val 2.0284 |   85.5k tok/s |  25.6 min
+done: final val loss 2.0284 | 25.55 min | peak GPU mem 4.89 GB
+
+===== [13/24] {'mode': 'diloco', 'k': 4, 'H': 100, 'steps': 4000, 'seed': 0, 'outer_momentum': 0.0, 'nesterov': False, 'outer_lr': 0.7}  (sweep time so far 4.5 h)
+run: diloco_k4_H100_olr0.7_m0.0_steps4000_s0
+params: 30.0M | device: cuda | dtype: bf16
+step     0 | rounds     0 | train   -    | val 10.8652 |    0.0k tok/s |   0.0 min
+step   100 | rounds     1 | train 6.7335 | val 4.6696 |   79.9k tok/s |   0.7 min
+step   200 | rounds     2 | train 4.0187 | val 3.8282 |   82.8k tok/s |   1.3 min
+step   300 | rounds     3 | train 3.5917 | val 3.4716 |   83.7k tok/s |   2.0 min
+step   400 | rounds     4 | train 3.3350 | val 3.2180 |   84.2k tok/s |   2.6 min
+step   500 | rounds     5 | train 3.1530 | val 3.0284 |   84.4k tok/s |   3.2 min
+step   600 | rounds     6 | train 3.0057 | val 2.8926 |   84.6k tok/s |   3.9 min
+step   700 | rounds     7 | train 2.8934 | val 2.7837 |   84.8k tok/s |   4.5 min
+step   800 | rounds     8 | train 2.8087 | val 2.6956 |   84.9k tok/s |   5.1 min
+step   900 | rounds     9 | train 2.7265 | val 2.6234 |   84.9k tok/s |   5.8 min
+step  1000 | rounds    10 | train 2.6502 | val 2.5577 |   85.0k tok/s |   6.4 min
+step  1100 | rounds    11 | train 2.6017 | val 2.5005 |   85.1k tok/s |   7.1 min
+step  1200 | rounds    12 | train 2.5445 | val 2.4505 |   85.2k tok/s |   7.7 min
+step  1300 | rounds    13 | train 2.5088 | val 2.4044 |   85.2k tok/s |   8.3 min
+step  1400 | rounds    14 | train 2.4533 | val 2.3670 |   85.3k tok/s |   9.0 min
+step  1500 | rounds    15 | train 2.4164 | val 2.3316 |   85.3k tok/s |   9.6 min
+step  1600 | rounds    16 | train 2.3802 | val 2.2990 |   85.3k tok/s |  10.2 min
+step  1700 | rounds    17 | train 2.3471 | val 2.2694 |   85.3k tok/s |  10.9 min
+step  1800 | rounds    18 | train 2.3146 | val 2.2420 |   85.4k tok/s |  11.5 min
+step  1900 | rounds    19 | train 2.2908 | val 2.2184 |   85.4k tok/s |  12.2 min
+step  2000 | rounds    20 | train 2.2646 | val 2.1958 |   85.4k tok/s |  12.8 min
+step  2100 | rounds    21 | train 2.2426 | val 2.1756 |   85.4k tok/s |  13.4 min
+step  2200 | rounds    22 | train 2.2155 | val 2.1562 |   85.4k tok/s |  14.1 min
+step  2300 | rounds    23 | train 2.1905 | val 2.1403 |   85.5k tok/s |  14.7 min
+step  2400 | rounds    24 | train 2.1747 | val 2.1262 |   85.5k tok/s |  15.3 min
+step  2500 | rounds    25 | train 2.1588 | val 2.1120 |   85.5k tok/s |  16.0 min
+step  2600 | rounds    26 | train 2.1371 | val 2.0996 |   85.5k tok/s |  16.6 min
+step  2700 | rounds    27 | train 2.1144 | val 2.0878 |   85.5k tok/s |  17.2 min
+step  2800 | rounds    28 | train 2.1125 | val 2.0769 |   85.5k tok/s |  17.9 min
+step  2900 | rounds    29 | train 2.0884 | val 2.0681 |   85.5k tok/s |  18.5 min
+step  3000 | rounds    30 | train 2.0816 | val 2.0602 |   85.5k tok/s |  19.2 min
+step  3100 | rounds    31 | train 2.0643 | val 2.0529 |   85.5k tok/s |  19.8 min
+step  3200 | rounds    32 | train 2.0590 | val 2.0457 |   85.5k tok/s |  20.4 min
+step  3300 | rounds    33 | train 2.0395 | val 2.0397 |   85.5k tok/s |  21.1 min
+step  3400 | rounds    34 | train 2.0388 | val 2.0341 |   85.6k tok/s |  21.7 min
+step  3500 | rounds    35 | train 2.0339 | val 2.0290 |   85.6k tok/s |  22.3 min
+step  3600 | rounds    36 | train 2.0250 | val 2.0244 |   85.6k tok/s |  23.0 min
+step  3700 | rounds    37 | train 2.0180 | val 2.0202 |   85.6k tok/s |  23.6 min
+step  3800 | rounds    38 | train 2.0133 | val 2.0170 |   85.6k tok/s |  24.3 min
+step  3900 | rounds    39 | train 2.0092 | val 2.0140 |   85.6k tok/s |  24.9 min
+step  4000 | rounds    40 | train 2.0106 | val 2.0111 |   85.6k tok/s |  25.5 min
+done: final val loss 2.0111 | 25.53 min | peak GPU mem 4.77 GB
+
+===== [14/24] {'mode': 'diloco', 'k': 4, 'H': 100, 'steps': 4000, 'seed': 0, 'outer_momentum': 0.0, 'nesterov': False, 'outer_lr': 1.0}  (sweep time so far 4.9 h)
+run: diloco_k4_H100_olr1.0_m0.0_steps4000_s0
+params: 30.0M | device: cuda | dtype: bf16
+step     0 | rounds     0 | train   -    | val 10.8652 |    0.0k tok/s |   0.0 min
+step   100 | rounds     1 | train 6.7335 | val 4.2589 |   80.1k tok/s |   0.7 min
+step   200 | rounds     2 | train 3.9236 | val 3.6146 |   82.8k tok/s |   1.3 min
+step   300 | rounds     3 | train 3.4754 | val 3.2744 |   83.6k tok/s |   2.0 min
+step   400 | rounds     4 | train 3.2021 | val 3.0315 |   84.1k tok/s |   2.6 min
+step   500 | rounds     5 | train 3.0174 | val 2.8656 |   84.4k tok/s |   3.2 min
+step   600 | rounds     6 | train 2.8701 | val 2.7414 |   84.6k tok/s |   3.9 min
+step   700 | rounds     7 | train 2.7578 | val 2.6382 |   84.8k tok/s |   4.5 min
+step   800 | rounds     8 | train 2.6731 | val 2.5569 |   84.9k tok/s |   5.1 min
+step   900 | rounds     9 | train 2.5904 | val 2.4882 |   85.0k tok/s |   5.8 min
+step  1000 | rounds    10 | train 2.5152 | val 2.4231 |   85.1k tok/s |   6.4 min
+step  1100 | rounds    11 | train 2.4674 | val 2.3698 |   85.2k tok/s |   7.1 min
+step  1200 | rounds    12 | train 2.4111 | val 2.3218 |   85.2k tok/s |   7.7 min
+step  1300 | rounds    13 | train 2.3773 | val 2.2781 |   85.3k tok/s |   8.3 min
+step  1400 | rounds    14 | train 2.3246 | val 2.2441 |   85.3k tok/s |   9.0 min
+step  1500 | rounds    15 | train 2.2899 | val 2.2112 |   85.3k tok/s |   9.6 min
+step  1600 | rounds    16 | train 2.2569 | val 2.1815 |   85.4k tok/s |  10.2 min
+step  1700 | rounds    17 | train 2.2260 | val 2.1548 |   85.3k tok/s |  10.9 min
+step  1800 | rounds    18 | train 2.1957 | val 2.1290 |   85.3k tok/s |  11.5 min
+step  1900 | rounds    19 | train 2.1744 | val 2.1097 |   85.3k tok/s |  12.2 min
+step  2000 | rounds    20 | train 2.1505 | val 2.0875 |   85.4k tok/s |  12.8 min
+step  2100 | rounds    21 | train 2.1303 | val 2.0687 |   85.4k tok/s |  13.4 min
+step  2200 | rounds    22 | train 2.1054 | val 2.0517 |   85.4k tok/s |  14.1 min
+step  2300 | rounds    23 | train 2.0819 | val 2.0367 |   85.4k tok/s |  14.7 min
+step  2400 | rounds    24 | train 2.0685 | val 2.0255 |   85.5k tok/s |  15.3 min
+step  2500 | rounds    25 | train 2.0531 | val 2.0111 |   85.5k tok/s |  16.0 min
+step  2600 | rounds    26 | train 2.0344 | val 2.0005 |   85.4k tok/s |  16.6 min
+step  2700 | rounds    27 | train 2.0124 | val 1.9895 |   85.5k tok/s |  17.3 min
+step  2800 | rounds    28 | train 2.0116 | val 1.9789 |   85.4k tok/s |  17.9 min
+step  2900 | rounds    29 | train 1.9881 | val 1.9713 |   85.4k tok/s |  18.5 min
+step  3000 | rounds    30 | train 1.9820 | val 1.9636 |   85.4k tok/s |  19.2 min
+step  3100 | rounds    31 | train 1.9661 | val 1.9564 |   85.4k tok/s |  19.8 min
+step  3200 | rounds    32 | train 1.9618 | val 1.9502 |   85.5k tok/s |  20.5 min
+step  3300 | rounds    33 | train 1.9432 | val 1.9433 |   85.5k tok/s |  21.1 min
+step  3400 | rounds    34 | train 1.9425 | val 1.9382 |   85.5k tok/s |  21.7 min
+step  3500 | rounds    35 | train 1.9386 | val 1.9340 |   85.5k tok/s |  22.4 min
+step  3600 | rounds    36 | train 1.9302 | val 1.9296 |   85.5k tok/s |  23.0 min
+step  3700 | rounds    37 | train 1.9236 | val 1.9260 |   85.5k tok/s |  23.6 min
+step  3800 | rounds    38 | train 1.9195 | val 1.9233 |   85.5k tok/s |  24.3 min
+step  3900 | rounds    39 | train 1.9161 | val 1.9200 |   85.5k tok/s |  24.9 min
+step  4000 | rounds    40 | train 1.9173 | val 1.9178 |   85.5k tok/s |  25.5 min
+done: final val loss 1.9178 | 25.54 min | peak GPU mem 4.77 GB
+
+===== [15/24] {'mode': 'baseline', 'steps': 4000, 'seed': 0, 'batch_size': 128}  (sweep time so far 5.4 h)
+[skip] baseline_bs128_steps4000_s0 already done
+
+===== [16/24] {'mode': 'baseline', 'steps': 4000, 'seed': 0, 'batch_size': 32}  (sweep time so far 5.4 h)
+[skip] baseline_bs32_steps4000_s0 already done
+
+===== [17/24] {'mode': 'baseline', 'steps': 4000, 'seed': 0, 'batch_size': 64}  (sweep time so far 5.4 h)
+run: baseline_bs64_steps4000_s0
+params: 30.0M | device: cuda | dtype: bf16
+step     0 | rounds     0 | train   -    | val 10.8630 |    0.0k tok/s |   0.1 min
+step   100 | rounds   100 | train 6.6717 | val 4.1776 |   71.2k tok/s |   0.4 min
+step   200 | rounds   200 | train 3.7690 | val 3.4703 |   76.3k tok/s |   0.7 min
+step   300 | rounds   300 | train 3.2626 | val 3.1042 |   78.2k tok/s |   1.0 min
+step   400 | rounds   400 | train 2.9667 | val 2.8785 |   79.1k tok/s |   1.4 min
+step   500 | rounds   500 | train 2.7808 | val 2.7178 |   79.8k tok/s |   1.7 min
+step   600 | rounds   600 | train 2.6444 | val 2.5964 |   80.1k tok/s |   2.0 min
+step   700 | rounds   700 | train 2.5286 | val 2.4959 |   80.5k tok/s |   2.4 min
+step   800 | rounds   800 | train 2.4452 | val 2.4193 |   80.7k tok/s |   2.7 min
+step   900 | rounds   900 | train 2.3769 | val 2.3454 |   80.8k tok/s |   3.0 min
+step  1000 | rounds  1000 | train 2.3102 | val 2.2992 |   80.9k tok/s |   3.4 min
+step  1100 | rounds  1100 | train 2.2680 | val 2.2433 |   81.0k tok/s |   3.7 min
+step  1200 | rounds  1200 | train 2.2151 | val 2.2063 |   81.1k tok/s |   4.0 min
+step  1300 | rounds  1300 | train 2.1808 | val 2.1741 |   81.2k tok/s |   4.4 min
+step  1400 | rounds  1400 | train 2.1445 | val 2.1402 |   81.3k tok/s |   4.7 min
+step  1500 | rounds  1500 | train 2.1177 | val 2.1100 |   81.4k tok/s |   5.0 min
+step  1600 | rounds  1600 | train 2.0901 | val 2.0831 |   81.4k tok/s |   5.4 min
+step  1700 | rounds  1700 | train 2.0644 | val 2.0601 |   81.5k tok/s |   5.7 min
+step  1800 | rounds  1800 | train 2.0402 | val 2.0387 |   81.5k tok/s |   6.0 min
+step  1900 | rounds  1900 | train 2.0216 | val 2.0197 |   81.6k tok/s |   6.4 min
+step  2000 | rounds  2000 | train 1.9981 | val 2.0029 |   81.6k tok/s |   6.7 min
+step  2100 | rounds  2100 | train 1.9818 | val 1.9856 |   81.6k tok/s |   7.0 min
+step  2200 | rounds  2200 | train 1.9671 | val 1.9692 |   81.6k tok/s |   7.4 min
+step  2300 | rounds  2300 | train 1.9509 | val 1.9512 |   81.7k tok/s |   7.7 min
+step  2400 | rounds  2400 | train 1.9391 | val 1.9386 |   81.7k tok/s |   8.0 min
+step  2500 | rounds  2500 | train 1.9163 | val 1.9249 |   81.7k tok/s |   8.4 min
+step  2600 | rounds  2600 | train 1.9208 | val 1.9117 |   81.7k tok/s |   8.7 min
+step  2700 | rounds  2700 | train 1.8959 | val 1.9008 |   81.7k tok/s |   9.0 min
+step  2800 | rounds  2800 | train 1.8841 | val 1.8870 |   81.7k tok/s |   9.4 min
+step  2900 | rounds  2900 | train 1.8739 | val 1.8774 |   81.8k tok/s |   9.7 min
+step  3000 | rounds  3000 | train 1.8507 | val 1.8673 |   81.8k tok/s |  10.0 min
+step  3100 | rounds  3100 | train 1.8465 | val 1.8578 |   81.8k tok/s |  10.3 min
+step  3200 | rounds  3200 | train 1.8461 | val 1.8514 |   81.8k tok/s |  10.7 min
+step  3300 | rounds  3300 | train 1.8442 | val 1.8419 |   81.8k tok/s |  11.0 min
+step  3400 | rounds  3400 | train 1.8317 | val 1.8359 |   81.8k tok/s |  11.3 min
+step  3500 | rounds  3500 | train 1.8242 | val 1.8297 |   81.8k tok/s |  11.7 min
+step  3600 | rounds  3600 | train 1.8175 | val 1.8249 |   81.9k tok/s |  12.0 min
+step  3700 | rounds  3700 | train 1.8170 | val 1.8201 |   81.9k tok/s |  12.3 min
+step  3800 | rounds  3800 | train 1.8024 | val 1.8155 |   81.9k tok/s |  12.7 min
+step  3900 | rounds  3900 | train 1.8057 | val 1.8121 |   81.9k tok/s |  13.0 min
+step  4000 | rounds  4000 | train 1.7985 | val 1.8103 |   81.9k tok/s |  13.3 min
+done: final val loss 1.8103 | 13.34 min | peak GPU mem 3.8 GB
+
+===== [18/24] {'mode': 'baseline', 'steps': 4000, 'seed': 0, 'batch_size': 256}  (sweep time so far 5.6 h)
+run: baseline_bs256_steps4000_s0
+params: 30.0M | device: cuda | dtype: bf16
+step     0 | rounds     0 | train   -    | val 10.8629 |    0.0k tok/s |   0.1 min
+step   100 | rounds   100 | train 6.5905 | val 4.0025 |   76.1k tok/s |   1.4 min
+step   200 | rounds   200 | train 3.5327 | val 3.1639 |   79.6k tok/s |   2.7 min
+step   300 | rounds   300 | train 2.9312 | val 2.7466 |   80.8k tok/s |   4.1 min
+step   400 | rounds   400 | train 2.6049 | val 2.4937 |   81.5k tok/s |   5.4 min
+step   500 | rounds   500 | train 2.3977 | val 2.3273 |   81.8k tok/s |   6.7 min
+step   600 | rounds   600 | train 2.2580 | val 2.2076 |   82.1k tok/s |   8.0 min
+step   700 | rounds   700 | train 2.1597 | val 2.1214 |   82.3k tok/s |   9.3 min
+step   800 | rounds   800 | train 2.0785 | val 2.0617 |   82.4k tok/s |  10.6 min
+step   900 | rounds   900 | train 2.0277 | val 2.0065 |   82.5k tok/s |  11.9 min
+step  1000 | rounds  1000 | train 1.9767 | val 1.9675 |   82.6k tok/s |  13.2 min
+step  1100 | rounds  1100 | train 1.9390 | val 1.9284 |   82.6k tok/s |  14.5 min
+step  1200 | rounds  1200 | train 1.9073 | val 1.8966 |   82.7k tok/s |  15.8 min
+step  1300 | rounds  1300 | train 1.8742 | val 1.8699 |   82.8k tok/s |  17.2 min
+step  1400 | rounds  1400 | train 1.8490 | val 1.8465 |   82.8k tok/s |  18.5 min
+step  1500 | rounds  1500 | train 1.8306 | val 1.8249 |   82.8k tok/s |  19.8 min
+step  1600 | rounds  1600 | train 1.8123 | val 1.8066 |   82.9k tok/s |  21.1 min
+step  1700 | rounds  1700 | train 1.7892 | val 1.7915 |   82.9k tok/s |  22.4 min
+step  1800 | rounds  1800 | train 1.7716 | val 1.7759 |   82.9k tok/s |  23.7 min
+step  1900 | rounds  1900 | train 1.7583 | val 1.7595 |   82.9k tok/s |  25.0 min
+step  2000 | rounds  2000 | train 1.7429 | val 1.7446 |   82.9k tok/s |  26.3 min
+step  2100 | rounds  2100 | train 1.7355 | val 1.7327 |   83.0k tok/s |  27.6 min
+step  2200 | rounds  2200 | train 1.7194 | val 1.7206 |   83.0k tok/s |  29.0 min
+step  2300 | rounds  2300 | train 1.7082 | val 1.7089 |   83.0k tok/s |  30.3 min
+step  2400 | rounds  2400 | train 1.6939 | val 1.6995 |   83.0k tok/s |  31.6 min
+step  2500 | rounds  2500 | train 1.6821 | val 1.6911 |   83.0k tok/s |  32.9 min
+step  2600 | rounds  2600 | train 1.6761 | val 1.6804 |   83.0k tok/s |  34.2 min
+step  2700 | rounds  2700 | train 1.6652 | val 1.6720 |   83.0k tok/s |  35.5 min
+step  2800 | rounds  2800 | train 1.6613 | val 1.6637 |   83.0k tok/s |  36.8 min
+step  2900 | rounds  2900 | train 1.6457 | val 1.6570 |   83.0k tok/s |  38.1 min
+step  3000 | rounds  3000 | train 1.6437 | val 1.6505 |   83.0k tok/s |  39.5 min
+step  3100 | rounds  3100 | train 1.6372 | val 1.6430 |   83.1k tok/s |  40.8 min
+step  3200 | rounds  3200 | train 1.6276 | val 1.6377 |   83.1k tok/s |  42.1 min
+step  3300 | rounds  3300 | train 1.6241 | val 1.6329 |   83.1k tok/s |  43.4 min
+step  3400 | rounds  3400 | train 1.6166 | val 1.6284 |   83.1k tok/s |  44.7 min
+step  3500 | rounds  3500 | train 1.6151 | val 1.6239 |   83.1k tok/s |  46.0 min
+step  3600 | rounds  3600 | train 1.6079 | val 1.6199 |   83.1k tok/s |  47.3 min
+step  3700 | rounds  3700 | train 1.6055 | val 1.6166 |   83.1k tok/s |  48.6 min
+step  3800 | rounds  3800 | train 1.6032 | val 1.6137 |   83.1k tok/s |  50.0 min
+step  3900 | rounds  3900 | train 1.5983 | val 1.6111 |   83.1k tok/s |  51.3 min
+step  4000 | rounds  4000 | train 1.5996 | val 1.6094 |   83.1k tok/s |  52.6 min
+done: final val loss 1.6094 | 52.58 min | peak GPU mem 3.81 GB
+
+===== [19/24] {'mode': 'diloco', 'steps': 4000, 'outer_lr': 0.7, 'seed': 0, 'k': 2, 'H': 25}  (sweep time so far 6.5 h)
+run: diloco_k2_H25_olr0.7_m0.9_nest_steps4000_s0
+params: 30.0M | device: cuda | dtype: bf16
+step     0 | rounds     0 | train   -    | val 10.8652 |    0.0k tok/s |   0.0 min
+step   100 | rounds     4 | train 6.6053 | val 4.2809 |   73.1k tok/s |   0.4 min
+step   200 | rounds     8 | train 3.8717 | val 3.6356 |   78.4k tok/s |   0.7 min
+step   300 | rounds    12 | train 3.3738 | val 3.2150 |   80.1k tok/s |   1.0 min
+step   400 | rounds    16 | train 3.0735 | val 2.9842 |   81.1k tok/s |   1.3 min
+step   500 | rounds    20 | train 2.8690 | val 2.8166 |   81.7k tok/s |   1.7 min
+step   600 | rounds    24 | train 2.7389 | val 2.7007 |   82.0k tok/s |   2.0 min
+step   700 | rounds    28 | train 2.6213 | val 2.6092 |   82.3k tok/s |   2.3 min
+step   800 | rounds    32 | train 2.5391 | val 2.5326 |   82.6k tok/s |   2.6 min
+step   900 | rounds    36 | train 2.4737 | val 2.4632 |   82.8k tok/s |   3.0 min
+step  1000 | rounds    40 | train 2.4135 | val 2.4106 |   82.9k tok/s |   3.3 min
+step  1100 | rounds    44 | train 2.3623 | val 2.3651 |   83.0k tok/s |   3.6 min
+step  1200 | rounds    48 | train 2.3142 | val 2.3268 |   83.1k tok/s |   3.9 min
+step  1300 | rounds    52 | train 2.2872 | val 2.2879 |   83.2k tok/s |   4.3 min
+step  1400 | rounds    56 | train 2.2428 | val 2.2492 |   83.3k tok/s |   4.6 min
+step  1500 | rounds    60 | train 2.2125 | val 2.2218 |   83.3k tok/s |   4.9 min
+step  1600 | rounds    64 | train 2.1834 | val 2.1934 |   83.4k tok/s |   5.2 min
+step  1700 | rounds    68 | train 2.1579 | val 2.1690 |   83.4k tok/s |   5.6 min
+step  1800 | rounds    72 | train 2.1248 | val 2.1436 |   83.5k tok/s |   5.9 min
+step  1900 | rounds    76 | train 2.1168 | val 2.1226 |   83.5k tok/s |   6.2 min
+step  2000 | rounds    80 | train 2.0863 | val 2.1052 |   83.6k tok/s |   6.5 min
+step  2100 | rounds    84 | train 2.0682 | val 2.0872 |   83.6k tok/s |   6.9 min
+step  2200 | rounds    88 | train 2.0596 | val 2.0665 |   83.6k tok/s |   7.2 min
+step  2300 | rounds    92 | train 2.0405 | val 2.0464 |   83.6k tok/s |   7.5 min
+step  2400 | rounds    96 | train 2.0174 | val 2.0338 |   83.6k tok/s |   7.8 min
+step  2500 | rounds   100 | train 2.0159 | val 2.0167 |   83.7k tok/s |   8.2 min
+step  2600 | rounds   104 | train 1.9911 | val 2.0032 |   83.7k tok/s |   8.5 min
+step  2700 | rounds   108 | train 1.9716 | val 1.9861 |   83.7k tok/s |   8.8 min
+step  2800 | rounds   112 | train 1.9679 | val 1.9700 |   83.7k tok/s |   9.1 min
+step  2900 | rounds   116 | train 1.9491 | val 1.9603 |   83.7k tok/s |   9.5 min
+step  3000 | rounds   120 | train 1.9432 | val 1.9466 |   83.7k tok/s |   9.8 min
+step  3100 | rounds   124 | train 1.9221 | val 1.9352 |   83.7k tok/s |  10.1 min
+step  3200 | rounds   128 | train 1.9185 | val 1.9256 |   83.7k tok/s |  10.4 min
+step  3300 | rounds   132 | train 1.9044 | val 1.9132 |   83.7k tok/s |  10.8 min
+step  3400 | rounds   136 | train 1.8855 | val 1.9053 |   83.8k tok/s |  11.1 min
+step  3500 | rounds   140 | train 1.8833 | val 1.8960 |   83.8k tok/s |  11.4 min
+step  3600 | rounds   144 | train 1.8819 | val 1.8856 |   83.8k tok/s |  11.7 min
+step  3700 | rounds   148 | train 1.8662 | val 1.8778 |   83.8k tok/s |  12.1 min
+step  3800 | rounds   152 | train 1.8553 | val 1.8696 |   83.8k tok/s |  12.4 min
+step  3900 | rounds   156 | train 1.8542 | val 1.8631 |   83.8k tok/s |  12.7 min
+step  4000 | rounds   160 | train 1.8464 | val 1.8578 |   83.8k tok/s |  13.0 min
+done: final val loss 1.8578 | 13.03 min | peak GPU mem 4.41 GB
+
+===== [20/24] {'mode': 'diloco', 'steps': 4000, 'outer_lr': 0.7, 'seed': 0, 'k': 2, 'H': 100}  (sweep time so far 6.7 h)
+run: diloco_k2_H100_olr0.7_m0.9_nest_steps4000_s0
+params: 30.0M | device: cuda | dtype: bf16
+step     0 | rounds     0 | train   -    | val 10.8652 |    0.0k tok/s |   0.0 min
+step   100 | rounds     1 | train 6.7404 | val 4.3518 |   74.1k tok/s |   0.4 min
+step   200 | rounds     2 | train 3.9133 | val 3.9555 |   79.0k tok/s |   0.7 min
+step   300 | rounds     3 | train 3.4597 | val 3.6228 |   80.8k tok/s |   1.0 min
+step   400 | rounds     4 | train 3.1803 | val 3.2467 |   81.7k tok/s |   1.3 min
+step   500 | rounds     5 | train 2.9628 | val 2.9517 |   82.3k tok/s |   1.7 min
+step   600 | rounds     6 | train 2.8223 | val 2.7789 |   82.7k tok/s |   2.0 min
+step   700 | rounds     7 | train 2.6942 | val 2.6603 |   82.9k tok/s |   2.3 min
+step   800 | rounds     8 | train 2.6039 | val 2.5718 |   83.0k tok/s |   2.6 min
+step   900 | rounds     9 | train 2.5302 | val 2.4968 |   83.1k tok/s |   3.0 min
+step  1000 | rounds    10 | train 2.4643 | val 2.4392 |   83.2k tok/s |   3.3 min
+step  1100 | rounds    11 | train 2.4080 | val 2.3890 |   83.4k tok/s |   3.6 min
+step  1200 | rounds    12 | train 2.3546 | val 2.3462 |   83.5k tok/s |   3.9 min
+step  1300 | rounds    13 | train 2.3236 | val 2.3085 |   83.5k tok/s |   4.3 min
+step  1400 | rounds    14 | train 2.2765 | val 2.2738 |   83.5k tok/s |   4.6 min
+step  1500 | rounds    15 | train 2.2447 | val 2.2433 |   83.6k tok/s |   4.9 min
+step  1600 | rounds    16 | train 2.2154 | val 2.2148 |   83.6k tok/s |   5.2 min
+step  1700 | rounds    17 | train 2.1881 | val 2.1917 |   83.6k tok/s |   5.6 min
+step  1800 | rounds    18 | train 2.1547 | val 2.1668 |   83.7k tok/s |   5.9 min
+step  1900 | rounds    19 | train 2.1462 | val 2.1455 |   83.7k tok/s |   6.2 min
+step  2000 | rounds    20 | train 2.1156 | val 2.1267 |   83.7k tok/s |   6.5 min
+step  2100 | rounds    21 | train 2.0987 | val 2.1130 |   83.7k tok/s |   6.8 min
+step  2200 | rounds    22 | train 2.0915 | val 2.0933 |   83.7k tok/s |   7.2 min
+step  2300 | rounds    23 | train 2.0729 | val 2.0777 |   83.8k tok/s |   7.5 min
+step  2400 | rounds    24 | train 2.0502 | val 2.0653 |   83.8k tok/s |   7.8 min
+step  2500 | rounds    25 | train 2.0522 | val 2.0510 |   83.8k tok/s |   8.1 min
+step  2600 | rounds    26 | train 2.0295 | val 2.0417 |   83.8k tok/s |   8.5 min
+step  2700 | rounds    27 | train 2.0121 | val 2.0296 |   83.8k tok/s |   8.8 min
+step  2800 | rounds    28 | train 2.0118 | val 2.0169 |   83.8k tok/s |   9.1 min
+step  2900 | rounds    29 | train 1.9970 | val 2.0074 |   83.9k tok/s |   9.4 min
+step  3000 | rounds    30 | train 1.9924 | val 1.9998 |   83.9k tok/s |   9.8 min
+step  3100 | rounds    31 | train 1.9744 | val 1.9904 |   83.9k tok/s |  10.1 min
+step  3200 | rounds    32 | train 1.9735 | val 1.9826 |   83.9k tok/s |  10.4 min
+step  3300 | rounds    33 | train 1.9637 | val 1.9761 |   83.9k tok/s |  10.7 min
+step  3400 | rounds    34 | train 1.9473 | val 1.9690 |   83.9k tok/s |  11.1 min
+step  3500 | rounds    35 | train 1.9485 | val 1.9640 |   83.9k tok/s |  11.4 min
+step  3600 | rounds    36 | train 1.9504 | val 1.9573 |   83.9k tok/s |  11.7 min
+step  3700 | rounds    37 | train 1.9364 | val 1.9514 |   83.9k tok/s |  12.0 min
+step  3800 | rounds    38 | train 1.9286 | val 1.9466 |   83.9k tok/s |  12.4 min
+step  3900 | rounds    39 | train 1.9299 | val 1.9409 |   83.9k tok/s |  12.7 min
+step  4000 | rounds    40 | train 1.9223 | val 1.9361 |   83.9k tok/s |  13.0 min
+done: final val loss 1.9361 | 13.02 min | peak GPU mem 4.41 GB
+
+===== [21/24] {'mode': 'diloco', 'steps': 4000, 'outer_lr': 0.7, 'seed': 0, 'k': 2, 'H': 500}  (sweep time so far 6.9 h)
+run: diloco_k2_H500_olr0.7_m0.9_nest_steps4000_s0
+params: 30.0M | device: cuda | dtype: bf16
+step     0 | rounds     0 | train   -    | val 10.8652 |    0.0k tok/s |   0.0 min
+step   500 | rounds     1 | train 4.0908 | val 3.2185 |   84.5k tok/s |   1.6 min
+step  1000 | rounds     2 | train 2.6960 | val 3.1190 |   85.6k tok/s |   3.2 min
+step  1500 | rounds     3 | train 2.3920 | val 2.5188 |   86.0k tok/s |   4.8 min
+step  2000 | rounds     4 | train 2.2130 | val 2.2111 |   86.2k tok/s |   6.3 min
+step  2500 | rounds     5 | train 2.1037 | val 2.0870 |   86.3k tok/s |   7.9 min
+step  3000 | rounds     6 | train 2.0284 | val 2.0220 |   86.2k tok/s |   9.5 min
+step  3500 | rounds     7 | train 1.9781 | val 1.9837 |   86.3k tok/s |  11.1 min
+step  4000 | rounds     8 | train 1.9533 | val 1.9635 |   86.3k tok/s |  12.7 min
+done: final val loss 1.9635 | 12.65 min | peak GPU mem 4.41 GB
+
+===== [22/24] {'mode': 'diloco', 'steps': 4000, 'outer_lr': 0.7, 'seed': 0, 'k': 8, 'H': 25}  (sweep time so far 7.1 h)
+run: diloco_k8_H25_olr0.7_m0.9_nest_steps4000_s0
+params: 30.0M | device: cuda | dtype: bf16
+step     0 | rounds     0 | train   -    | val 10.8652 |    0.0k tok/s |   0.0 min
+step   100 | rounds     4 | train 6.5864 | val 4.2434 |   83.2k tok/s |   1.3 min
+step   200 | rounds     8 | train 3.8269 | val 3.5260 |   84.9k tok/s |   2.6 min
+step   300 | rounds    12 | train 3.3069 | val 3.0945 |   85.4k tok/s |   3.8 min
+step   400 | rounds    16 | train 2.9817 | val 2.8281 |   85.6k tok/s |   5.1 min
+step   500 | rounds    20 | train 2.7759 | val 2.6603 |   85.8k tok/s |   6.4 min
+step   600 | rounds    24 | train 2.6207 | val 2.5314 |   85.9k tok/s |   7.6 min
+step   700 | rounds    28 | train 2.5040 | val 2.4288 |   86.0k tok/s |   8.9 min
+step   800 | rounds    32 | train 2.4118 | val 2.3456 |   86.0k tok/s |  10.2 min
+step   900 | rounds    36 | train 2.3365 | val 2.2768 |   86.1k tok/s |  11.4 min
+step  1000 | rounds    40 | train 2.2684 | val 2.2181 |   86.1k tok/s |  12.7 min
+step  1100 | rounds    44 | train 2.2098 | val 2.1678 |   86.1k tok/s |  13.9 min
+step  1200 | rounds    48 | train 2.1606 | val 2.1255 |   86.2k tok/s |  15.2 min
+step  1300 | rounds    52 | train 2.1229 | val 2.0856 |   86.2k tok/s |  16.5 min
+step  1400 | rounds    56 | train 2.0878 | val 2.0504 |   86.2k tok/s |  17.7 min
+step  1500 | rounds    60 | train 2.0487 | val 2.0235 |   86.3k tok/s |  19.0 min
+step  1600 | rounds    64 | train 2.0217 | val 1.9964 |   86.3k tok/s |  20.3 min
+step  1700 | rounds    68 | train 2.0031 | val 1.9731 |   86.3k tok/s |  21.5 min
+step  1800 | rounds    72 | train 1.9769 | val 1.9510 |   86.3k tok/s |  22.8 min
+step  1900 | rounds    76 | train 1.9498 | val 1.9313 |   86.3k tok/s |  24.0 min
+step  2000 | rounds    80 | train 1.9342 | val 1.9145 |   86.3k tok/s |  25.3 min
+step  2100 | rounds    84 | train 1.9167 | val 1.8992 |   86.3k tok/s |  26.6 min
+step  2200 | rounds    88 | train 1.9008 | val 1.8824 |   86.3k tok/s |  27.8 min
+step  2300 | rounds    92 | train 1.8843 | val 1.8671 |   86.3k tok/s |  29.1 min
+step  2400 | rounds    96 | train 1.8706 | val 1.8574 |   86.3k tok/s |  30.4 min
+step  2500 | rounds   100 | train 1.8523 | val 1.8459 |   86.3k tok/s |  31.6 min
+step  2600 | rounds   104 | train 1.8423 | val 1.8365 |   86.3k tok/s |  32.9 min
+step  2700 | rounds   108 | train 1.8268 | val 1.8239 |   86.3k tok/s |  34.2 min
+step  2800 | rounds   112 | train 1.8186 | val 1.8136 |   86.4k tok/s |  35.4 min
+step  2900 | rounds   116 | train 1.8049 | val 1.8046 |   86.4k tok/s |  36.7 min
+step  3000 | rounds   120 | train 1.7958 | val 1.7969 |   86.4k tok/s |  37.9 min
+step  3100 | rounds   124 | train 1.7852 | val 1.7897 |   86.4k tok/s |  39.2 min
+step  3200 | rounds   128 | train 1.7779 | val 1.7827 |   86.4k tok/s |  40.5 min
+step  3300 | rounds   132 | train 1.7723 | val 1.7765 |   86.4k tok/s |  41.7 min
+step  3400 | rounds   136 | train 1.7604 | val 1.7703 |   86.4k tok/s |  43.0 min
+step  3500 | rounds   140 | train 1.7547 | val 1.7642 |   86.4k tok/s |  44.3 min
+step  3600 | rounds   144 | train 1.7506 | val 1.7589 |   86.4k tok/s |  45.5 min
+step  3700 | rounds   148 | train 1.7463 | val 1.7537 |   86.4k tok/s |  46.8 min
+step  3800 | rounds   152 | train 1.7429 | val 1.7495 |   86.4k tok/s |  48.0 min
+step  3900 | rounds   156 | train 1.7370 | val 1.7452 |   86.4k tok/s |  49.3 min
+step  4000 | rounds   160 | train 1.7287 | val 1.7415 |   86.4k tok/s |  50.6 min
+done: final val loss 1.7415 | 50.55 min | peak GPU mem 5.86 GB
+
+===== [23/24] {'mode': 'diloco', 'steps': 4000, 'outer_lr': 0.7, 'seed': 0, 'k': 8, 'H': 100}  (sweep time so far 8.0 h)
+run: diloco_k8_H100_olr0.7_m0.9_nest_steps4000_s0
+params: 30.0M | device: cuda | dtype: bf16
+step     0 | rounds     0 | train   -    | val 10.8652 |    0.0k tok/s |   0.0 min
+step   100 | rounds     1 | train 6.7331 | val 4.3290 |   83.3k tok/s |   1.3 min
+step   200 | rounds     2 | train 3.9040 | val 3.8360 |   85.0k tok/s |   2.6 min
+step   300 | rounds     3 | train 3.4457 | val 3.5446 |   85.3k tok/s |   3.8 min
+step   400 | rounds     4 | train 3.1507 | val 3.1348 |   85.6k tok/s |   5.1 min
+step   500 | rounds     5 | train 2.9420 | val 2.8532 |   85.8k tok/s |   6.4 min
+step   600 | rounds     6 | train 2.7820 | val 2.6675 |   85.8k tok/s |   7.6 min
+step   700 | rounds     7 | train 2.6592 | val 2.5484 |   86.0k tok/s |   8.9 min
+step   800 | rounds     8 | train 2.5622 | val 2.4557 |   86.0k tok/s |  10.2 min
+step   900 | rounds     9 | train 2.4832 | val 2.3805 |   86.1k tok/s |  11.4 min
+step  1000 | rounds    10 | train 2.4114 | val 2.3175 |   86.1k tok/s |  12.7 min
+step  1100 | rounds    11 | train 2.3498 | val 2.2687 |   86.1k tok/s |  14.0 min
+step  1200 | rounds    12 | train 2.2968 | val 2.2267 |   86.2k tok/s |  15.2 min
+step  1300 | rounds    13 | train 2.2560 | val 2.1871 |   86.2k tok/s |  16.5 min
+step  1400 | rounds    14 | train 2.2179 | val 2.1533 |   86.2k tok/s |  17.7 min
+step  1500 | rounds    15 | train 2.1764 | val 2.1238 |   86.3k tok/s |  19.0 min
+step  1600 | rounds    16 | train 2.1473 | val 2.0974 |   86.3k tok/s |  20.3 min
+step  1700 | rounds    17 | train 2.1250 | val 2.0755 |   86.3k tok/s |  21.5 min
+step  1800 | rounds    18 | train 2.0984 | val 2.0540 |   86.3k tok/s |  22.8 min
+step  1900 | rounds    19 | train 2.0696 | val 2.0349 |   86.3k tok/s |  24.0 min
+step  2000 | rounds    20 | train 2.0523 | val 2.0169 |   86.3k tok/s |  25.3 min
+step  2100 | rounds    21 | train 2.0336 | val 2.0021 |   86.3k tok/s |  26.6 min
+step  2200 | rounds    22 | train 2.0170 | val 1.9875 |   86.3k tok/s |  27.8 min
+step  2300 | rounds    23 | train 2.0006 | val 1.9733 |   86.3k tok/s |  29.1 min
+step  2400 | rounds    24 | train 1.9862 | val 1.9631 |   86.3k tok/s |  30.4 min
+step  2500 | rounds    25 | train 1.9686 | val 1.9520 |   86.4k tok/s |  31.6 min
+step  2600 | rounds    26 | train 1.9586 | val 1.9423 |   86.4k tok/s |  32.9 min
+step  2700 | rounds    27 | train 1.9433 | val 1.9327 |   86.4k tok/s |  34.1 min
+step  2800 | rounds    28 | train 1.9349 | val 1.9241 |   86.4k tok/s |  35.4 min
+step  2900 | rounds    29 | train 1.9213 | val 1.9155 |   86.4k tok/s |  36.7 min
+step  3000 | rounds    30 | train 1.9129 | val 1.9099 |   86.4k tok/s |  37.9 min
+step  3100 | rounds    31 | train 1.9033 | val 1.9037 |   86.4k tok/s |  39.2 min
+step  3200 | rounds    32 | train 1.8961 | val 1.8974 |   86.4k tok/s |  40.5 min
+step  3300 | rounds    33 | train 1.8910 | val 1.8918 |   86.4k tok/s |  41.7 min
+step  3400 | rounds    34 | train 1.8801 | val 1.8871 |   86.4k tok/s |  43.0 min
+step  3500 | rounds    35 | train 1.8754 | val 1.8831 |   86.4k tok/s |  44.2 min
+step  3600 | rounds    36 | train 1.8723 | val 1.8783 |   86.4k tok/s |  45.5 min
+step  3700 | rounds    37 | train 1.8679 | val 1.8740 |   86.4k tok/s |  46.8 min
+step  3800 | rounds    38 | train 1.8654 | val 1.8695 |   86.4k tok/s |  48.0 min
+step  3900 | rounds    39 | train 1.8598 | val 1.8652 |   86.4k tok/s |  49.3 min
+step  4000 | rounds    40 | train 1.8513 | val 1.8610 |   86.4k tok/s |  50.5 min
+done: final val loss 1.8610 | 50.55 min | peak GPU mem 5.86 GB
+
+===== [24/24] {'mode': 'diloco', 'steps': 4000, 'outer_lr': 0.7, 'seed': 0, 'k': 8, 'H': 500}  (sweep time so far 8.8 h)
+run: diloco_k8_H500_olr0.7_m0.9_nest_steps4000_s0
+params: 30.0M | device: cuda | dtype: bf16
+step     0 | rounds     0 | train   -    | val 10.8652 |    0.0k tok/s |   0.0 min
+step   500 | rounds     1 | train 4.0861 | val 3.1260 |   86.7k tok/s |   6.3 min
+step  1000 | rounds     2 | train 2.6936 | val 2.9615 |   86.9k tok/s |  12.6 min
+step  1500 | rounds     3 | train 2.3767 | val 2.4347 |   87.0k tok/s |  18.8 min
+step  2000 | rounds     4 | train 2.1954 | val 2.1334 |   87.0k tok/s |  25.1 min
+step  2500 | rounds     5 | train 2.0781 | val 2.0194 |   87.1k tok/s |  31.4 min
+step  3000 | rounds     6 | train 1.9981 | val 1.9668 |   87.1k tok/s |  37.6 min
+step  3500 | rounds     7 | train 1.9465 | val 1.9370 |   87.1k tok/s |  43.9 min
+step  4000 | rounds     8 | train 1.9201 | val 1.9196 |   87.1k tok/s |  50.1 min
+done: final val loss 1.9196 | 50.15 min | peak GPU mem 5.86 GB
+
+sweep finished in 9.6 h, 0 failed

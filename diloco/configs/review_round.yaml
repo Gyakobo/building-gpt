@@ -1,0 +1,31 @@
+# Experiments requested by the independent review.
+# (1) Hold H = 100 fixed and vary the number of outer rounds T = 4, 8, 16 (T = 24 and 40 exist):
+#     does a higher outer lr win when there are few rounds?
+# (2) DiLoCo with ONE worker vs plain AdamW (Charles et al.'s "M = 1 beats data-parallel");
+#     compare with the solo baseline (batch 32, 4000 steps), which sees the same tokens.
+# (3) Extra seeds for the fixed-budget cells behind the "best lr drifts with H" observation.
+base:
+  mode: diloco
+  seed: 0
+runs:
+  - {k: 4, H: 100, steps: 400, warmup: 40, outer_lr: 0.5}
+  - {k: 4, H: 100, steps: 400, warmup: 40, outer_lr: 0.7}
+  - {k: 4, H: 100, steps: 400, warmup: 40, outer_lr: 1.0}
+  - {k: 4, H: 100, steps: 800, warmup: 80, outer_lr: 0.5}
+  - {k: 4, H: 100, steps: 800, warmup: 80, outer_lr: 0.7}
+  - {k: 4, H: 100, steps: 800, warmup: 80, outer_lr: 1.0}
+  - {k: 4, H: 100, steps: 1600, outer_lr: 0.5}
+  - {k: 4, H: 100, steps: 1600, outer_lr: 0.7}
+  - {k: 4, H: 100, steps: 1600, outer_lr: 1.0}
+  - {k: 1, H: 25, steps: 4000, outer_lr: 0.4}
+  - {k: 1, H: 25, steps: 4000, outer_lr: 0.7}
+  - {k: 1, H: 100, steps: 4000, outer_lr: 0.4}
+  - {k: 1, H: 100, steps: 4000, outer_lr: 0.7}
+  - {k: 1, H: 500, steps: 4000, outer_lr: 0.4}
+  - {k: 1, H: 500, steps: 4000, outer_lr: 0.7}
+  - {k: 4, H: 250, steps: 4000, outer_lr: 0.7, seed: 1}
+  - {k: 4, H: 250, steps: 4000, outer_lr: 0.7, seed: 2}
+  - {k: 4, H: 250, steps: 4000, outer_lr: 1.0, seed: 1}
+  - {k: 4, H: 250, steps: 4000, outer_lr: 1.0, seed: 2}
+  - {k: 4, H: 500, steps: 4000, outer_lr: 1.0, seed: 1}
+  - {k: 4, H: 500, steps: 4000, outer_lr: 1.0, seed: 2}

@@ -15,4 +15,3 @@ A special thanks to [Andrej Karpathy](https://github.com/karpathy) for [nanoGPT]
  
 This project implements **DiLoCo** (*Distributed Low-Communication* training) on top of a small nanoGPT-style language model, and runs a systematic hyperparameter sweep to map how the algorithm's main settings interact at small scale.
  
-## Introduction
