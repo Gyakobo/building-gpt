@@ -23,3 +23,5 @@ tiktoken
 datasets
 tqdm
 pytest
+
+pyyaml
