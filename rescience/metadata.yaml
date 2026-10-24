@@ -1,0 +1,85 @@
+# To be filled by the author(s) at the time of submission
+# -------------------------------------------------------
+
+title: "[Re] Communication-Efficient Language Model Training Scales Reliably and Robustly: Scaling Laws for DiLoCo"
+
+authors:
+  - name: Andrew Gyakobo
+    orcid:
+    email: andygyakobo@gmail.com
+    affiliations: 1,*
+
+  - name: Felix Schmidt
+    orcid:
+    email: felixchantaraskul@icloud.com
+    affiliations: 2
+
+affiliations:
+  - code:    1
+    name:    Independent Researcher
+    address: New Jersey, USA
+
+  - code:    2
+    name:    Independent Researcher
+    address: Florida, USA
+
+keywords: rescience c, distributed training, DiLoCo, local SGD, language models, python, pytorch
+
+code:
+  - url: https://github.com/Gyakobo/diloco
+  - doi:
+  - swh:
+
+data:
+  - url:
+  - doi:
+
+replication:
+ - cite: "Zachary Charles, Gabriel Teston, Lucio Dery, Keith Rush, Nova Fallen, Zachary Garrett, Arthur Szlam, Arthur Douillard. Communication-Efficient Language Model Training Scales Reliably and Robustly: Scaling Laws for DiLoCo. Advances in Neural Information Processing Systems, 2025."
+ - bib:  charles2025scaling
+ - url:  https://arxiv.org/abs/2503.09799
+ - doi:  10.48550/arXiv.2503.09799
+
+abstract: "Charles et al. (2025) derived scaling laws for DiLoCo, a low-communication method for training language models across workers that synchronize only every H steps, and gave hyperparameter guidance along the way. We test five of their qualitative findings with an independent implementation, at a scale that fits on one consumer GPU: a 30M-parameter model trained from scratch on TinyStories, with up to eight workers simulated sequentially. Four findings reproduce: evaluation loss grows with H; the best outer learning rate grows with the number of workers; at small model size DiLoCo trails data-parallel training by a margin that widens with more workers; and a single DiLoCo worker beats plain AdamW, though here only at a short sync interval. The fifth, that the best outer learning rate grows with H, holds at a fixed token budget but is better explained by the number of outer rounds, which shrinks as H grows: a learning rate of 1.0 beats 0.7 only in runs with 16 or fewer rounds, both when H varies at a fixed number of rounds and when the number of rounds varies at a fixed H. All 126 runs take about 71 GPU-hours; a 3-hour subset reproduces the claims that rest on the smallest differences."
+
+bibliography: bibliography.bib
+
+type: Replication
+
+domain: Machine Learning
+
+language: Python
+
+
+# To be filled by the author(s) after acceptance
+# -----------------------------------------------------------------------------
+
+review:
+  - url:
+
+contributors:
+  - name:
+    orcid:
+    role: editor
+  - name:
+    orcid:
+    role: reviewer
+  - name:
+    orcid:
+    role: reviewer
+
+dates:
+  - received:
+  - accepted:
+  - published:
+
+article:
+  - number:
+  - doi:
+  - url:
+
+journal:
+  - name:   "ReScience C"
+  - issn:   2430-3658
+  - volume:
+  - issue:
