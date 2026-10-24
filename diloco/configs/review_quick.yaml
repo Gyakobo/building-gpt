@@ -1,0 +1,23 @@
+# Short reproduction for reviewers: about 3 GPU-hours on an 8 GB RTX 3070 Ti.
+# Writes to results_review/ so it never mixes with the released logs in results/.
+# Afterwards run:  python compare_review.py
+# It covers the claims of the paper that rest on the smallest differences:
+#   - loss grows with H at a fixed budget (H = 25, 100, 500)
+#   - the outer-lr preference follows the number of rounds (H = 100 with 4, 8 and 40 rounds)
+#   - a single DiLoCo worker beats AdamW at H = 25 but not at H = 100
+base:
+  seed: 0
+  out_dir: results_review
+runs:
+  - {mode: baseline, batch_size: 32, steps: 4000}                 # solo baseline
+  - {mode: baseline, batch_size: 128, steps: 4000}                # sync baseline (k = 4)
+  - {mode: diloco, k: 4, H: 25,  outer_lr: 0.7, steps: 4000}
+  - {mode: diloco, k: 4, H: 100, outer_lr: 0.7, steps: 4000}      # 40 rounds
+  - {mode: diloco, k: 4, H: 100, outer_lr: 1.0, steps: 4000}      # 40 rounds
+  - {mode: diloco, k: 4, H: 500, outer_lr: 0.7, steps: 4000}
+  - {mode: diloco, k: 4, H: 100, outer_lr: 0.7, steps: 400, warmup: 40}   # 4 rounds
+  - {mode: diloco, k: 4, H: 100, outer_lr: 1.0, steps: 400, warmup: 40}
+  - {mode: diloco, k: 4, H: 100, outer_lr: 0.7, steps: 800, warmup: 80}   # 8 rounds
+  - {mode: diloco, k: 4, H: 100, outer_lr: 1.0, steps: 800, warmup: 80}
+  - {mode: diloco, k: 1, H: 25,  outer_lr: 0.4, steps: 4000}      # single worker
+  - {mode: diloco, k: 1, H: 100, outer_lr: 0.7, steps: 4000}

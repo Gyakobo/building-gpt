@@ -9,3 +9,7 @@ pyvenv.cfg
 .python-version
 
 diloco/data/*.bin
+__pycache__/
+*Zone.Identifier
+.DS_Store
+diloco/results_review/

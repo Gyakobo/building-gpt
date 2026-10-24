@@ -1,12 +1,12 @@
-\begin{tabular}{lcc}
+\begin{tabular}{lccc}
 \toprule
-Outer optimizer & Outer lr & Val loss \\
+Outer optimizer & Outer lr & Val loss & Gap closed \\
 \midrule
-Nesterov, momentum 0.9 (default) & 0.7 & 1.884 \\
-Nesterov, momentum 0.9 (default) & 1.0 & 1.891 \\
-Plain momentum 0.9 & 0.7 & 2.037 \\
-Plain momentum 0.9 & 1.0 & 2.028 \\
-No momentum & 0.7 & 2.011 \\
-No momentum & 1.0 & 1.918 \\
+Nesterov, momentum 0.9 (default) & 0.7 & 1.884 & 35\% \\
+Nesterov, momentum 0.9 (default) & 1.0 & 1.891 & 32\% \\
+Plain momentum 0.9 & 0.7 & 2.037 & -19\% \\
+Plain momentum 0.9 & 1.0 & 2.028 & -16\% \\
+No momentum & 0.7 & 2.011 & -10\% \\
+No momentum & 1.0 & 1.918 & 23\% \\
 \bottomrule
 \end{tabular}

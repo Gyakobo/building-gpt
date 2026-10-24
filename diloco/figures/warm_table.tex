@@ -1,0 +1,14 @@
+\begin{tabular}{lccc}
+\toprule
+Run & Comm.\ rounds & Val loss & Gap closed \\
+\midrule
+$H$=25 & 720 & 1.535 & 70\% \\
+$H$=100 & 180 & 1.562 & 55\% \\
+$H$=500 & 36 & 1.668 & -4\% \\
+$H$=500, after 2000 sync steps & 2{,}032 & 1.610 & 29\% \\
+$H$=500, after 6000 sync steps & 6{,}024 & 1.576 & 47\% \\
+\midrule
+Sync baseline & 18{,}000 & 1.481 & 100\% \\
+Solo baseline & 0 & 1.662 & 0\% \\
+\bottomrule
+\end{tabular}

@@ -26,7 +26,7 @@ affiliations:
 keywords: rescience c, distributed training, DiLoCo, local SGD, language models, python, pytorch
 
 code:
-  - url: https://github.com/Gyakobo/diloco
+  - url: https://github.com/Gyakobo/building-gpt/tree/main/diloco
   - doi:
   - swh:
 
