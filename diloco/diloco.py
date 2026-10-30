@@ -26,6 +26,7 @@ from dataclasses import asdict, dataclass, fields, replace
 import numpy as np
 import torch
 
+from compress import ErrorFeedback, compress_all, make_compressor
 from model import GPT, GPTConfig
 
 
@@ -41,6 +42,12 @@ class TrainConfig:
     outer_lr: float = 0.7
     outer_momentum: float = 0.9
     nesterov: bool = True
+    # --- pseudo-gradient compression (see compress.py) ---
+    compressor: str = "none"    # "none": the original weight-averaging path, untouched.
+                                # anything else ("fp32", "int4", "topk1", ...): every worker's delta
+                                # is compressed, decoded, and the decoded deltas are averaged
+    error_feedback: bool = False
+    ef_beta: float = 1.0        # EF buffer decay; 1.0 = classic error feedback
     # --- inner optimizer (AdamW), shared by workers and baselines ---
     steps: int = 3000           # inner steps per worker (= total steps for a baseline)
     batch_size: int = 32        # sequences per optimizer step (sync baseline: 32 * k = 128)
@@ -58,6 +65,8 @@ class TrainConfig:
     # --- bookkeeping ---
     eval_interval: int = 100    # inner steps between evaluations
     eval_iters: int = 20        # validation batches per evaluation
+    final_eval_iters: int = 0   # > 0: one extra, larger evaluation of the final model
+    wandb_project: str = ""     # non-empty: also log every row to Weights & Biases
     seed: int = 0
     dtype: str = "bf16"         # "bf16" (experiments) or "fp32" (tests)
     device: str = "cuda" if torch.cuda.is_available() else "cpu"
@@ -74,6 +83,9 @@ class TrainConfig:
                  f"{'_nest' if self.nesterov else ''}"
                  f"{'' if self.shard_mode == 'random' else '_' + self.shard_mode}"
                  f"{f'_warm{self.warm_start_steps}' if self.warm_start_steps else ''}")
+            if self.compressor != "none":   # names of uncompressed runs are unchanged
+                n += (f"_c{self.compressor}{'_ef' if self.error_feedback else ''}"
+                      f"{f'{self.ef_beta:g}' if self.error_feedback and self.ef_beta != 1.0 else ''}")
         else:
             n = f"baseline_bs{self.batch_size}"
         if (self.n_layer, self.n_head, self.n_embd) != (6, 6, 384):   # non-default model size
@@ -221,13 +233,14 @@ def evaluate(model, val, val_ix, cfg):
 EVAL_BATCH = 32   # sequences per validation batch -- fixed, so every run sees the same validation set
 
 
-def fixed_val_batches(val, cfg):
+def fixed_val_batches(val, cfg, n_batches=None):
     # Same 20 x 32 validation sequences for EVERY run, whatever its training batch size.
     # (An earlier version used cfg.batch_size here, which gave the large-batch sync baselines
     # a larger validation set than everything else.)
+    # n_batches > eval_iters (the final evaluation) extends the same sequence of batches.
     g = torch.Generator().manual_seed(1234)
     return [torch.randint(0, len(val) - cfg.block_size - 1, (EVAL_BATCH,), generator=g)
-            for _ in range(cfg.eval_iters)]
+            for _ in range(n_batches or cfg.eval_iters)]
 
 
 # ---------------------------------------------------------------------------
@@ -273,6 +286,13 @@ def run_diloco(cfg, train, val, log):
     g_params = list(global_model.parameters())
     w_params = list(worker.parameters())
     avg = [torch.zeros_like(p) for p in g_params]   # running mean of the workers' weights
+                                                    # (compressed runs: mean of decoded deltas)
+    compressed = cfg.compressor != "none"
+    if compressed:
+        compressor = make_compressor(cfg.compressor)
+        efs = [ErrorFeedback(g_params, cfg.ef_beta) for _ in range(cfg.k)] if cfg.error_feedback else None
+        true_avg = [torch.zeros_like(p) for p in g_params]   # uncompressed mean delta, for diagnostics
+        comm = dict(uplink_bytes=0, cos_sim=None, rel_err=None, ef_norm=None)
 
     W = cfg.warm_start_steps
     assert 0 <= W <= cfg.steps and (cfg.steps - W) % cfg.H == 0, "steps - warm_start_steps must be divisible by H"
@@ -299,24 +319,54 @@ def run_diloco(cfg, train, val, log):
 
     for t in range(T):
         torch._foreach_zero_(avg)
+        if compressed:
+            torch._foreach_zero_(true_avg)
         for i in range(cfg.k):
             with torch.no_grad():
                 torch._foreach_copy_(w_params, g_params)          # worker starts from global
             for h in range(cfg.H):
                 train_losses.append(inner_step(worker, inner_opts[i], shards[i], steps_done + h, cfg))
             with torch.no_grad():
-                torch._foreach_add_(avg, w_params, alpha=1.0 / cfg.k)
+                if not compressed:
+                    torch._foreach_add_(avg, w_params, alpha=1.0 / cfg.k)
+                else:
+                    deltas = [g - w for g, w in zip(g_params, w_params)]   # this worker's pseudo-gradient
+                    # random-k mask seed, unique per (run seed, round, worker, tensor); the decoder
+                    # rebuilds the mask from it, so no indices need to be sent
+                    seeds = [((cfg.seed * 1_000_003 + W + t) * 1009 + i) * 10_007 + j
+                             for j in range(len(deltas))]
+                    if efs is not None:
+                        sent, nbytes = efs[i].compress(compressor, deltas, seeds)
+                    else:
+                        sent, nbytes = compress_all(compressor, deltas, seeds)
+                    torch._foreach_add_(avg, sent, alpha=1.0 / cfg.k)
+                    torch._foreach_add_(true_avg, deltas, alpha=1.0 / cfg.k)
+                    comm["uplink_bytes"] += nbytes
         steps_done += cfg.H
 
         # outer step: pseudo-gradient = how far the average worker moved, written into .grad
         with torch.no_grad():
-            for p, a in zip(g_params, avg):
-                p.grad = p - a
+            if not compressed:
+                for p, a in zip(g_params, avg):
+                    p.grad = p - a
+            else:
+                for p, a in zip(g_params, avg):
+                    p.grad = a.clone()
+                # how faithful was this round's (averaged) compressed update?
+                dot = sum(float((a * b).sum()) for a, b in zip(avg, true_avg))
+                na = math.sqrt(sum(float(a.pow(2).sum()) for a in avg))
+                nb = math.sqrt(sum(float(b.pow(2).sum()) for b in true_avg))
+                err = math.sqrt(sum(float((a - b).pow(2).sum()) for a, b in zip(avg, true_avg)))
+                comm["cos_sim"] = dot / max(na * nb, 1e-30)
+                comm["rel_err"] = err / max(nb, 1e-30)
+                comm["ef_norm"] = (math.sqrt(sum(e.norm() ** 2 for e in efs) / cfg.k)
+                                   if efs is not None else 0.0)
         outer_opt.step()
         outer_opt.zero_grad(set_to_none=True)
 
         if steps_done % cfg.eval_interval < cfg.H or t == T - 1:
-            if log(global_model, steps_done, W + t + 1, float(np.mean(train_losses))):
+            extra = dict(comm) if compressed else None
+            if log(global_model, steps_done, W + t + 1, float(np.mean(train_losses)), extra):
                 return
             train_losses = []
 
@@ -368,14 +418,24 @@ def run(cfg, train=None, val=None, write=True, verbose=True):
     if cfg.device.startswith("cuda"):
         torch.cuda.reset_peak_memory_stats()
 
-    def log(model, step, comm_rounds, train_loss):
+    wb = None
+    if cfg.wandb_project:
+        import wandb   # optional dependency, only needed when logging to W&B
+        wb = wandb.init(project=cfg.wandb_project, name=name, config=asdict(cfg), reinit=True)
+    last = {}
+
+    def log(model, step, comm_rounds, train_loss, extra=None):
         """Evaluate and record one row. Returns True if the run diverged (stop early)."""
+        last["model"] = model
         val_loss = evaluate(model, val, val_ix, cfg)
         elapsed = time.time() - t0
         row = dict(step=step, comm_rounds=comm_rounds, tokens=step * tokens_per_step,
                    train_loss=train_loss, val_loss=val_loss, lr=lr_at(max(step - 1, 0), cfg),
                    elapsed_s=round(elapsed, 1))
+        row.update(extra or {})
         rows.append(row)
+        if wb is not None:
+            wb.log({k: v for k, v in row.items() if v is not None}, step=step)
         if verbose:
             tps = row["tokens"] / elapsed if elapsed > 0 else 0
             tl = f"{train_loss:.4f}" if train_loss is not None else "  -   "
@@ -395,8 +455,13 @@ def run(cfg, train=None, val=None, write=True, verbose=True):
         raise ValueError(f"unknown mode {cfg.mode}")
 
     final = rows[-1]
+    final_large = None
+    if cfg.final_eval_iters and math.isfinite(final["val_loss"]):
+        final_large = evaluate(last["model"], val, fixed_val_batches(val, cfg, cfg.final_eval_iters), cfg)
     summary = dict(config=asdict(cfg), name=name,
                    final_val_loss=final["val_loss"],
+                   final_val_loss_large=final_large,
+                   total_uplink_bytes=final.get("uplink_bytes"),
                    diverged=not math.isfinite(final["val_loss"]),
                    steps_done=final["step"], comm_rounds=final["comm_rounds"],
                    tokens=final["tokens"], minutes=round((time.time() - t0) / 60, 2),
@@ -407,12 +472,16 @@ def run(cfg, train=None, val=None, write=True, verbose=True):
               f"{summary['minutes']} min | peak GPU mem {summary['peak_mem_gb']} GB")
     if write:
         os.makedirs(cfg.out_dir, exist_ok=True)
+        fieldnames = list(dict.fromkeys(k for r in rows for k in r))   # first row may lack the comm columns
         with open(csv_path, "w", newline="") as f:
-            w = csv.DictWriter(f, fieldnames=list(rows[0].keys()))
+            w = csv.DictWriter(f, fieldnames=fieldnames, restval="")
             w.writeheader()
             w.writerows(rows)
         with open(json_path, "w") as f:
             json.dump(summary, f, indent=2)
+    if wb is not None:
+        wb.summary.update({k: v for k, v in summary.items() if k != "config"})
+        wb.finish()
     return rows
 
 
