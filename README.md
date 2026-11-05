@@ -27,6 +27,8 @@ Just a few notes about the model:
 * A context window of 256 characters
 * Trained on ~1.1 MB of text ([input.txt](./input.txt), the *Tiny Shakespeare* dataset)
 
+https://github.com/user-attachments/assets/f02c1d21-c222-4c44-a61a-3fc51d38c85a
+
 ## Methodology
 
 ### 1) Tokenization
